@@ -11,7 +11,7 @@ export async function getNewsData(){
   try {
     const response = await axios(URL)
     const data = await response.data; 
-    console.log(data); 
+    console.log("data in render-news.ts",data); 
     renderNewsHTML(data); 
   } catch (error) {
     console.log(error)
@@ -23,14 +23,13 @@ async function renderNewsHTML(data){
   // Viktiga properties --> author, content, description, title, urlToImage och publishedAt (date).  
   const newsCont = document.querySelector('.main-news-content'); 
   const html = data.articles.map((article) => {
-    console.log("newsCont in renderNewsHTML", newsCont)
+    console.log("article in renderNewsHTML",article)
     let {author, urlToImage, source: name, title, description, content } = article;
     
-    if(author === null || urlToImage === null || name === null || title === null || description === null )
+    if(author === null || urlToImage === null || name === null || title === null || description === null || content === null )
       return // Objekt med null inuti ska ej visas på skärmen
-
+    
     content = content.substring(0,content.indexOf('[')); 
-
     return `
     <div class="article-container">
       <h1> Author: ${author}</h1>

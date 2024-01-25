@@ -28,8 +28,10 @@ async function renderNewsHTML(data){
     
     if(author === null || urlToImage === null || name === null || title === null || description === null || content === null )
       return // Objekt med null inuti ska ej visas på skärmen
-    
-    content = content.substring(0,content.indexOf('[')); 
+
+    if(content)  
+      content = content.substring(0,content.indexOf('[')); 
+
     return `
     <div class="article-container">
       <h1> Author: ${author}</h1>

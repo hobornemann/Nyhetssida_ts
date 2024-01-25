@@ -1,4 +1,5 @@
-// @ts-nocheck   // This command makes sure that the js-file is not checked as a ts-file when the tsc compiler runs
+// @ts-nocheck   
+// The above command makes sure that the js-file is not checked as a ts-file when the tsc compiler runs
 
 import axios from "axios";
 

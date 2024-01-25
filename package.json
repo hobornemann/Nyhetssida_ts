@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "watch": "tsc --watch"  
+    "watch": "tsc --watch --preserveWatchOutput"  
   },
   "devDependencies": {
     "typescript": "^5.2.2",

@@ -1,0 +1,38 @@
+@media(width < 1001px){
+  .top-right-menu{
+    display: inline-block;
+  }
+
+  .title-container .title{
+    --font-size: 2rem;
+  }
+
+  .filter-options p img{
+    display: inline-block;
+  }
+
+  .filter-cont{
+    position: absolute;
+    left: 0px;
+    bottom: -55px;
+    
+    background-color: rgb(255, 255, 255);   
+    border-bottom: 2px solid lightgrey;
+    padding: 0px 10px;
+    width: 100%;
+    height: 52px;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .show-menu{
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .grid-layout{
+    grid-template-areas: 'main' 'aside';
+    grid-template-columns: 1fr;
+    padding: 0px 16px
+  }
+}

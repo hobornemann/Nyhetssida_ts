@@ -1,0 +1,165 @@
+@import url('article.css');
+
+*, ::before, ::after{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  list-style: none;
+  font-family:'Roboto', 'Arial', sans-serif;
+}
+
+body{
+  position: relative;
+  background-color: #ebebeb;
+  width: 100vw;
+  height: 100vh;
+  min-height: auto;
+}
+
+body::-webkit-scrollbar{
+  display: none;
+}
+
+/* ------------------------------------------------HEADER--------------------------------------------- */
+
+header{
+  position: sticky;
+  top: 0;
+  height: 75px;
+  width: 100%;
+  border-bottom: 3px solid #e02e3d;
+  background-color: rgb(255, 255, 255);
+  z-index: 1000;
+}
+
+.header-content{
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+  height: 100%;
+  width: 100%;
+  max-width: 1000px;
+  padding: 0px 10px;
+  margin-inline: auto;
+  z-index: 9999999;
+}
+
+.top-right-menu{
+  display: none;
+  width: 37px;
+  cursor: pointer;
+}
+
+.logo-container{
+  flex: 1;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  /* border: 1px solid; */
+}
+
+.logo-container img{
+  width: 100px;
+}
+
+.filter-cont{
+  flex: none ;
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  overflow: auto;
+  /* transition: all 300ms; */
+}
+
+.filter-cont::-webkit-scrollbar{
+  display: none; 
+}
+
+.filter-options{
+  height: 100%;
+  flex: none;
+  display: grid;
+  place-content: center;
+}
+
+.filter-options p {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.15rem;
+  width: 90px;
+  cursor: pointer;
+}
+
+.header-icon{
+  width: 24px;
+  cursor: pointer;
+}
+
+.filter-options p:hover{
+  text-decoration: underline;
+}
+
+.form-in-header{
+  display: flex;
+  align-items: center;
+}
+
+.form-in-header button{
+  width: 30px;
+  height: 30px;
+  border: none;
+  margin-left: -23px;
+  border-radius: 50%;
+  background-color: rgb(255, 112, 112);
+  box-shadow: -2px 0px 3px rgba(0, 0, 0, 0.304);
+}
+
+.form-in-header button img{
+  width: 20px;
+  height: 20px;
+}
+
+#header-input{
+  background-color: rgb(255, 255, 255);
+  height: 30px;
+  border-radius: 10px;
+  outline: none;
+  border: none;
+  box-shadow: inset 2px 2px 3px rgba(0, 0, 0, 0.311), inset -1px -1px 3px rgba(0, 0, 0, 0.311);
+}
+
+#header-input[type="text"]{
+  font-family: 'Roboto', 'Arial', sans-serif;
+  font-size: 0.9rem; 
+  color: black;
+  padding-left: 10px;
+}
+
+/* -------------------------------------------------------- MAIN --------------------------------------------- */
+
+.grid-layout{
+  margin: 20px auto;
+  height: 100%;
+  /* width: 1000px; */
+  display: grid;
+  grid-template-areas: 'main aside';
+  grid-template-columns: 3fr 1fr;
+  gap: 1rem;
+  max-width: 1000px;
+}
+
+.main-news-content{
+  grid-area: main;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  /* background-color: blueviolet; */
+}
+
+aside{
+  grid-area: aside;
+  background-color: rgb(255, 112, 112);
+  border-top-right-radius: 4px;
+}

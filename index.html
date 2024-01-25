@@ -2,12 +2,70 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vite + TS</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style/style.css">
+    <link rel="stylesheet" href="style/media-queries.css">
+    <script type="module" src="/script/main.js"></script>
+    <title>News</title>
   </head>
   <body>
-    <div id="app"></div>
-    <script type="module" src="/src/main.ts"></script>
+    <header>
+      <div class="header-content">
+        <div class="logo-container">
+          <img src="https://st4.depositphotos.com/1028367/31369/v/450/depositphotos_313697504-stock-illustration-megaphone-or-loudspeaker-icon-with.jpg" alt="">
+        </div>
+        <ul class="filter-cont">
+          <li class="filter-options">
+            <form class="form-in-header">
+              <input type="text" id="header-input" placeholder="Search">
+              <button><img src="svg-icon/search-svgrepo-com (1).svg" alt="magnifying glass"></button>
+            </form>
+          </li>
+          <li class="filter-options">
+            <p>
+              News <img class="header-icon" src="svg-icon/news-svgrepo-com.svg" alt="">
+            </p>
+          </li>
+          <li class="filter-options">
+            <p>Sport <img class="header-icon" src="svg-icon/american-football-svgrepo-com.svg" alt="">
+            </p>
+          </li>
+          <li class="filter-options" id="user-log-in">
+            <p>Sign In <img class="header-icon" src="svg-icon/account-svgrepo-com.svg" alt="">
+            </p>
+          </li>
+        </ul>
+        <img class="top-right-menu" src="svg-icon/menu-svgrepo-com.svg" alt="menu">
+      </div>
+    </header>
+    <div class="grid-layout">
+      <main class="main-news-content">
+        <!-- <div class="article-container">
+          <h1>SPRÅKRÖR SJUKSKRIVEN</h1>
+          <div>
+            <article class="article-content">
+              <img src="https://www.svtstatic.se/image-news/760/cinema/0.54/0.46/109dd4770094a45adee41c7e1d813f9066e718a756cb6e88408e30a52300c78a" alt="Article picture">
+              <div class="title-container">
+                <h2 class="title">Märta Stenevi sjukskriven: ”Det är svårt att acceptera”</h2>
+                <p class="sub-title">Miljöpartiets språkrör: ”Sliten efter hösten”</p>
+              </div>
+            </article>
+            <div class="show-more-cont">
+             <div>
+               <p>Show more</p>
+               <img src="svg-icon/arrow-down-circle-svgrepo-com.svg" alt="">
+             </div>
+             <article class="content">
+             </article>
+            </div>
+          </div>
+        </div> -->
+      </main>
+      <aside></aside>
+    </div>
+    <footer></footer>
   </body>
 </html>

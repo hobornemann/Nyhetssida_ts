@@ -2,24 +2,10 @@ export{
     getDefaultArticlesObject,
     getArticlesFromLocalStorage,
     getArticlesObject,
-    setArticlesInLocalStorage 
+    setArticlesInLocalStorage, 
 }
 
 
-// TYPE
-type Article = {
-  author: string | null;   
-  content: string | null;
-  description: string | null;
-  publishedAt: string | null;
-  source: {
-    id: string | null;
-    name: string | null;
-  };
-  title: string | null;
-  url: string | null;
-  urlToImage: string | null;
-};
 
 
 // MODEL
@@ -38,23 +24,25 @@ function getDefaultArticlesObject(){
       url: "https://www.espn.com/mma/story/_/id/39374751/kayla-harrison-joins-ufc-debut-vs-holly-holm-ufc-300",
       urlToImage: "https://a4.espncdn.com/combiner/i?img=%2Fphoto%2F2023%2F1126%2Fr1258286_1296x729_16%2D9.jpg",
       publishedAt: "2024-01-24T04:56:00Z",
-      content: "Holly Holm and Kayla Harrison, two of the most accomplished athletes in women's combat sports history, will meet at UFC 300.\r\nThe UFC has signed Harrison, a two-time Olympic gold medalist in judo and… [+1753 chars]"
+      content: "Holly Holm and Kayla Harrison, two of the most accomplished athletes in women's combat sports history, will meet at UFC 300.\r\nThe UFC has signed Harrison, a two-time Olympic gold medalist in judo and… [+1753 chars]",
+      isFavourite: false,
     },
     {
-        "source": 
-        {
-            "id": null,
-            "name": null
-        },
-        "author": null,   
-        "title": null,
-        "description": null,
-        "url": null,
-        "urlToImage": null,
-        "publishedAt": null,
-        "content": null
-      }
-    ];
+      source: 
+      {
+          id: null,
+          name: null
+      },
+      author: null,   
+      title: null,
+      description: null,
+      url: null,
+      urlToImage: null,
+      publishedAt: null,
+      content: null,
+      isFavourite: null,
+    },
+  ];
   return articles;
 };
 

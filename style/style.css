@@ -104,13 +104,14 @@ header{
 .form-in-header{
   display: flex;
   align-items: center;
+  gap: 0.5rem;
 }
 
 .form-in-header button{
   width: 30px;
   height: 30px;
   border: none;
-  margin-left: -23px;
+  margin-left: -31px;
   border-radius: 50%;
   background-color: rgb(255, 112, 112);
   box-shadow: -2px 0px 3px rgba(0, 0, 0, 0.304);
@@ -136,6 +137,22 @@ header{
   color: black;
   padding-left: 10px;
 }
+
+.date-for-filter-search{
+  display: none;
+  height: 30px;
+  padding: 0px 5px;
+  border: none;
+  border-radius: 10px;
+  opacity: 1;
+  cursor: pointer;
+  box-shadow: inset 2px 2px 3px rgba(0, 0, 0, 0.311), inset -1px -1px 3px rgba(0, 0, 0, 0.311);
+} 
+
+.show-date{
+  display: inline-block;
+}
+
 
 /* -------------------------------------------------------- MAIN --------------------------------------------- */
 

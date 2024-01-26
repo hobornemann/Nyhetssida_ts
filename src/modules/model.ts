@@ -1,12 +1,10 @@
+import { Article } from "../types/article";
 export{
     getDefaultArticlesObject,
     getArticlesFromLocalStorage,
     getArticlesObject,
     setArticlesInLocalStorage, 
 }
-
-
-
 
 // MODEL
 function getDefaultArticlesObject(){

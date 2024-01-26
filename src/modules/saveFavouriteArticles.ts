@@ -1,3 +1,4 @@
+import { Article } from "../types/article";
 export {
     saveFavouriteArticleToLocalStorage
 }
@@ -6,8 +7,6 @@ import {
     getArticlesFromLocalStorage,
     setArticlesInLocalStorage 
 } from "./model.ts"
-
-
 
 
 function saveFavouriteArticleToLocalStorage(article: Article):void {

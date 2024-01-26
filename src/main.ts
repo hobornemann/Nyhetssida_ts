@@ -22,16 +22,17 @@ header.addEventListener('click', (el: MouseEvent) => {
 })
 
 // ---------------------------Search for articles-----------------------------
-const headerInput = document.querySelector<HTMLInputElement>('#header-input')
-const formInHeader = document.querySelector<HTMLInputElement>('.form-in-header')!
-formInHeader.addEventListener('submit', (el: MouseEvent) => {
+const headerInput = document.querySelector<HTMLInputElement>('#header-input')!;
+const formInHeader = document.querySelector<HTMLInputElement>('.filter-cont')!;
+formInHeader.addEventListener('submit', (el: SubmitEvent) => {
     el.preventDefault(); 
+  
     const keyWord: string | null = headerInput.value; 
     const date: string | null = dateInput.value; 
     headerInput.value = '' 
 
     if(keyWord){
-       const url: string = `https://newsapi.org/v2/everything?q=${keyWord}&from=${date}&sortBy=popularity&apiKey=${import.meta.env.VITE_NEWS_API}`
+       const url: string  = `https://newsapi.org/v2/everything?q=${keyWord}&from=${date}&sortBy=popularity&apiKey=${import.meta.env.VITE_NEWS_API}`
        getNewsData(url); 
         return
     } else if(!keyWord){
@@ -41,6 +42,53 @@ formInHeader.addEventListener('submit', (el: MouseEvent) => {
         }, 5000);
     }
 }); 
+
+const filterContEl = document.querySelector('.filter-cont'); 
+filterContEl?.addEventListener('click', (el: Event) => {
+    const filterOptions = document.querySelectorAll<HTMLParagraphElement>('.filter-options p'); 
+    const categories = document.querySelectorAll<HTMLUListElement>('.categories');
+    const chevronButtonsImage = document.querySelectorAll<HTMLImageElement>('.chevron-button img')
+    const target: EventTarget | null = el.target; 
+    
+    filterOptions.forEach((option: HTMLParagraphElement, index: number) => {
+        if((target === option || target == chevronButtonsImage[index]) && categories){        
+            categories[index].dataset.showOptions='true'; 
+            return
+        } 
+        
+        if(target !== option && index < 2 && categories) {
+            categories[index].dataset.showOptions='false'
+        }
+    })
+})
+const categoryOptions = document.querySelectorAll<HTMLLIElement>('.category-option')
+categoryOptions.forEach((category: HTMLLIElement) => {
+    category.addEventListener('click', () => {
+        const keyWord = category.dataset.name; 
+        const parentEl = document.querySelectorAll('.categories'); 
+        const APIkey: string = import.meta.env.VITE_NEWS_API;
+
+        if(keyWord && category.closest('.categories') === parentEl[0]){
+            let url = `https://newsapi.org/v2/top-headlines?sources=${keyWord}&apiKey=${APIkey}` 
+            if(keyWord === 'General'){
+                url = `https://newsapi.org/v2/top-headlines?country=us&category=general&apiKey=${APIkey}`
+                getNewsData(url);
+                return
+            }
+
+            getNewsData(url);
+            return 
+        }
+
+        if(keyWord && category.closest('.categories') === parentEl[1]){
+            const url = `https://newsapi.org/v2/top-headlines?country=us&category=sports&q=${keyWord}&apiKey=${APIkey}`
+            getNewsData(url);
+            return 
+        }
+
+    })
+
+})
 
 // ----------------------SHOW MORE BUTTON--------------------------------
 const mainContentContainer = document.querySelector<HTMLUListElement>('.main-news-content')!; 

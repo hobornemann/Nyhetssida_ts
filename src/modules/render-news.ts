@@ -4,10 +4,10 @@
 import axios from "axios";
 import { Article, Articles } from "../types/article";
 
-export async function getNewsData(url=null){
-  const APIkey: string = import.meta.env.VITE_NEWS_API; 
+export async function getNewsData(url: string | null = null){
+  const APIkey: string = import.meta.env.VITE_NEWS_API1; 
   const URL: string = (url) ? 
-  url : `https://newsapi.org/v2/top-headlines?country=us&category=sports&apiKey=${APIkey}`
+  url : `https://newsapi.org/v2/top-headlines?country=us&category=general&apiKey=${APIkey}`
 
   try {
     const response = await axios(URL)
@@ -28,25 +28,26 @@ async function renderNewsHTML(data: Articles){
   }  
 
   const html = data.articles.map((article: Article) => {
-    let {author, urlToImage, source: {name}, title, description, content } = article;
+    let {author, url, urlToImage, source: {name}, title, description, content } = article;
     
-    if(author === null || urlToImage === null || name === null || title === null || description === null || content === null )
+    if(author === null || url === null || urlToImage === null || name === null || title === null || description === null || content === null )
     return // Objekt med null inuti ska ej visas på skärmen
   
-  if(content)  
-    content = content.substring(0,content.indexOf('[')); 
+  if(content)  {
+    content = content.substring(0,content.indexOf('['));
+    content.replace(/(<([^>]+)>)/gi, "")
+  }
   // console.log("article in renderNewsHTML",article)
 
     return `
     <li class="article-container">
-      <h1>${name}</h1>
+      <a href="${url}" title="Visit the website"><h1>${name}</h1></a>
       <div>
         <div class="article-content">
-          
-          <img src="${urlToImage}" alt="${name} headline picture">
+          <a href="${url}"><img src="${urlToImage}" alt="${name} headline picture"></a>
           <div class="title-container">
-          <p><b>Author: ${author}</b></p>
-            <h2 class="title">${title}</h2>
+          <p style="text-decoration: underline; padding: 10px 0px;"><b>Author: ${author}</b></p>
+            <a href="${url}"><h2 class="title" title="Visit the website">${title}</h2></a>
             <p class="sub-title">${description}</p>
           </div>
         </div>

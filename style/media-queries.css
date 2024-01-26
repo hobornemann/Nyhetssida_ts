@@ -7,20 +7,22 @@
     --font-size: 2rem;
   }
 
-  .filter-options p img{
+  .filter-options p img, .chevron-button{
     display: inline-block;
   }
 
   .filter-cont{
     position: absolute;
-    left: 0px;
-    bottom: -55px;
-    
+    right: 1px;
+    bottom: -241px;
+
+    flex-direction: column;
     background-color: rgb(255, 255, 255);   
-    border-bottom: 2px solid lightgrey;
-    padding: 0px 10px;
-    width: 100%;
-    height: 52px;
+    border-bottom-right-radius: 6px;
+    border-bottom-left-radius: 6px;
+    padding: 20px 25px;
+    /* width: 100%; */
+    /* height: 0px; */
     opacity: 0;
     pointer-events: none;
   }
@@ -28,6 +30,12 @@
   .show-menu{
     opacity: 1;
     pointer-events: auto;
+  }
+
+  .categories{
+    top: 0px;
+    right: 154px;
+    bottom: -60px;
   }
 
   .grid-layout{

@@ -5,7 +5,7 @@ import axios from "axios";
 import { Article, Articles } from "../types/article";
 
 export async function getNewsData(url: string | null = null){
-  const APIkey: string = import.meta.env.VITE_NEWS_API1; 
+  const APIkey: string = import.meta.env.VITE_NEWS_API; 
   const URL: string = (url) ? 
   url : `https://newsapi.org/v2/top-headlines?country=us&category=general&apiKey=${APIkey}`
 

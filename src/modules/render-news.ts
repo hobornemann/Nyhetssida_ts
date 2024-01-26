@@ -2,11 +2,11 @@
 // The above command makes sure that the js-file is not checked as a ts-file when the tsc compiler runs
 
 import axios from "axios";
+import { Article, Articles } from "../types/article";
 
 export async function getNewsData(){
-  const APIkey = import.meta.env.VITE_NEWS_API; 
-  const URL = `https://newsapi.org/v2/top-headlines?country=us&category=sports&apiKey=${APIkey}`
-  // const urlNYtimes = `https://api.nytimes.com/svc/mostpopular/v2/viewed/1.json?api-key=${import.meta.env.VITE_NY_TIMES_API}`
+  const APIkey: string = import.meta.env.VITE_NEWS_API; 
+  const URL: string = `https://newsapi.org/v2/top-headlines?country=us&category=sports&apiKey=${APIkey}`
 
   try {
     const response = await axios(URL)
@@ -18,22 +18,21 @@ export async function getNewsData(){
   }
 }
 
-async function renderNewsHTML(data){
+async function renderNewsHTML(data: Articles){
   // data parametern kommer med en property döpt till article, som innehåller en lista med 10 objekt (Nyheter). 
   // Viktiga properties --> author, content, description, title, urlToImage och publishedAt (date).  
-  const newsCont = document.querySelector('.main-news-content'); 
-  const html = data.articles.map((article) => {
-    console.log("article in renderNewsHTML",article)
+  const html = data.articles.map((article: Article) => {
     let {author, urlToImage, source: name, title, description, content } = article;
     
     if(author === null || urlToImage === null || name === null || title === null || description === null || content === null )
-      return // Objekt med null inuti ska ej visas på skärmen
-
-    if(content)  
-      content = content.substring(0,content.indexOf('[')); 
+    return // Objekt med null inuti ska ej visas på skärmen
+  
+  if(content)  
+    content = content.substring(0,content.indexOf('[')); 
+  console.log("article in renderNewsHTML",article)
 
     return `
-    <div class="article-container">
+    <li class="article-container">
       <h1> Author: ${author}</h1>
       <div>
         <div class="article-content">
@@ -53,9 +52,10 @@ async function renderNewsHTML(data){
           </article>
         </div>
       </div>
-    </div>
+    </li>
     `
   }).join(''); 
 
-  newsCont.innerHTML = html; 
+  const newsCont: HTMLUListElement | null = document.querySelector('.main-news-content'); 
+  if(newsCont) newsCont.innerHTML = html; 
 }

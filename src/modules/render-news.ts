@@ -20,23 +20,21 @@ export async function getNewsData(url: string | null = null){
 }
 
 async function renderNewsHTML(data: Articles){
-  // data parametern kommer med en property döpt till article, som innehåller en lista med 10 objekt (Nyheter). 
-  // Viktiga properties --> author, content, description, title, urlToImage och publishedAt (date).  
   const newsCont: HTMLUListElement | null = document.querySelector('.main-news-content'); 
+  
   if(newsCont && data.articles.length < 1){
     return newsCont.innerHTML = "Unfortunately, there are no news articles available for the choosen date. Please check back later for updates."
   }  
-
+  
   const html = data.articles.map((article: Article) => {
     let {author, url, urlToImage, source: {name}, title, description, content } = article;
     
     if(author === null || url === null || urlToImage === null || name === null || title === null || description === null || content === null )
-    return // Objekt med null inuti ska ej visas på skärmen
+      return // Objekt med null inuti ska ej visas på skärmen
   
-  if(content)  {
+    // content.replace(/(<([^>]+)>)/gi, "")
     content = content.substring(0,content.indexOf('['));
-    content.replace(/(<([^>]+)>)/gi, "")
-  }
+    
   // console.log("article in renderNewsHTML",article)
 
     return `
@@ -58,6 +56,7 @@ async function renderNewsHTML(data: Articles){
           </div>
           <article class="content">
           ${content}
+          <a href="${url}"><button class="visit-website-button">Visit ${name}</button>
           </article>
         </div>
       </div>

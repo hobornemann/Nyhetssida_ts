@@ -3,7 +3,8 @@
 
 import { getArticlesFromLocalStorage, setArticlesInLocalStorage } from "./modules/model";
 import { getNewsData, renderNewsHTML } from "./modules/render-news";
-import { Article } from "./types/article";
+import { Article, Articles } from "./types/article";
+import{updateFavouriteButtonsOfRenderedArticles, addEventListenersToFavouriteButtons} from "./modules/favourites";
 
 
 getNewsData(); 
@@ -71,6 +72,7 @@ categoryOptions.forEach((category: HTMLLIElement) => {
         const parentEl: NodeListOf<HTMLUListElement> = document.querySelectorAll('.categories'); 
         const newsSources = parentEl[0]
         const sportCategories = parentEl[1]
+        const favouriteCategory = parentEl[2]
         const APIkey: string = import.meta.env.VITE_NEWS_API;
 
         if(keyWord && category.closest('.categories') === newsSources){
@@ -89,10 +91,30 @@ categoryOptions.forEach((category: HTMLLIElement) => {
             getNewsData(url);
             return 
         }
-    })
 
+        if(keyWord && category.closest('.categories') === favouriteCategory){
+            if(keyWord === 'Favourites'){               
+                let favouriteArticles: Article[] | undefined = getArticlesFromLocalStorage('favouriteArticles')
+                let data: Articles = {};
+                if(favouriteArticles){
+                    data.articles = favouriteArticles
+                    renderNewsHTML(data)
+                    setArticlesInLocalStorage('renderedArticles', data.articles)
+                    updateFavouriteButtonsOfRenderedArticles();
+                    addEventListenersToFavouriteButtons();
+                } else {
+                    const newsCont: HTMLUListElement | null = document.querySelector('.main-news-content'); 
+                    if(newsCont && data.articles.length < 1){
+                        return newsCont.innerHTML = "You have not stored any favourite articles yet."
+                    } 
+                }
+            }
+            return 
+        }
+    })
 })
 
+//TODO: Fråga till Isak: Varför har vi en eventListener på hela main-news-content istället för på 'show-more-cont img' direkt/specifikt? 
 // ----------------------SHOW MORE BUTTON--------------------------------
 const mainContentContainer: HTMLUListElement | null = document.querySelector('.main-news-content'); 
 if(mainContentContainer){
@@ -117,46 +139,8 @@ if(mainContentContainer){
 }
 
 
-// ----------------------UPDATE FAVOURITE BUTTONS--------------------------------
-function updateFavouriteButtons(){
-
-    
-}
 
 
-
-// ----------------------ADD EVENT LISTENERS TO FAVOURITE BUTTONS--------------------------------
-function addEventListenersToFavouriteButtons(): void {
-    try{
-        const favouriteButtons: HTMLButtonElement[] | null = document.querySelectorAll(".favourite-button")    
-        let favouriteArticles: Article[] | null = getArticlesFromLocalStorage('favouriteArticles')
-        let renderedArticles: Article[] | null = getArticlesFromLocalStorage('renderedArticles')
-
-        favouriteButtons.forEach(button => {
-            button.addEventListener('click', (e: MouseEvent) => {
-                let isFavourite: boolean = button.classList.contains("is-favourite-article")
-                let urlOfClickedArticle: string = e.target.getAttribute('data-url')
-                if(isFavourite){
-                    button.innerText = "Save as favourite"
-                    button.classList.remove("is-favourite-article")
-                    let indexOfArticle: number = favouriteArticles.findIndex(article => article.url === urlOfClickedArticle);
-                    favouriteArticles = favouriteArticles.filter(article => article.url !== urlOfClickedArticle)
-                    setArticlesInLocalStorage('favouriteArticles', favouriteArticles)
-                } else {
-                    button.innerText = "Favourite"
-                    button.classList.add("is-favourite-article")
-                    let clickedArticles: Article[] | null = renderedArticles.find(article => article.url === urlOfClickedArticle);
-                    clickedArticles[0].isFavourite = true
-                    favouriteArticles.push(clickedArticle[0]) 
-                    setArticlesInLocalStorage('favouriteArticles', favouriteArticles)
-                }
-            })
-        })
-    }
-    catch(error:any){
-        console.log("Error in favouriteButtons addEventListener functions", error.message)
-    }  
-}
 
 
 // ----------------------SHOW FAVOURITE ARTICLES BUTTON--------------------------------
@@ -180,25 +164,3 @@ if(showFavouriteArticlesButton){
 
 
 
-
-
-   /*          
-    if(favouriteButtons){
-        try{
-            
-            if(favouriteArticles && renderedArticles){
-                let favouriteUrls: string[] = favouriteArticles.map(favouriteArticle => favouriteArticle.url) 
-                let renderedFavouriteArticles: Article[] = renderedArticles.filter(renderedArticle => favouriteUrls.includes(renderedArticle.url))
-                if(renderedFavouriteArticles){
-                    renderedFavouriteArticles.map(renderedFavouriteArticle => {
-                        const favouriteButton = favouriteButtons.filter(button => 
-                            button.getAttribute('data-url') === renderedFavouriteArticle.url)
-                            favouriteButton[0].classList.add('isFavourite')
-                            favouriteButton[0].innerText = "Favourite"
-                    })
-                }
-            }
-        }
-        catch(error: any) { console.log("Error in XXX ", error.message)}
-
- */

@@ -93,8 +93,7 @@ categoryOptions.forEach((category: HTMLLIElement) => {
 
         if(keyWord && category.closest('.categories') === sportCategories){
             const url = `https://newsapi.org/v2/top-headlines?country=us&category=sports&pageSize=10&page=1&q=${keyWord}&apiKey=${APIkey}`
-            getNewsData(url);
-            
+            getNewsData(url);        
             return 
         }
 
@@ -117,7 +116,6 @@ categoryOptions.forEach((category: HTMLLIElement) => {
             }
             return 
         }
-
 
     })
 
@@ -183,7 +181,3 @@ if(showFavouriteArticlesButton){
         }
     })
 }
-
-
-
-

@@ -1,3 +1,4 @@
+@import url('pages.css');
 @import url('article.css');
 
 *, ::before, ::after{
@@ -218,45 +219,6 @@ header{
   width: 100%;
 }
 
-/* --------------------------------------------------------PAGES---------------------------------------------- */
-.pages-cont{
-  position: relative;
-  display: flex;
-  align-items: center;
-  background-color: transparent;
-  width: fit-content;
-  height: 41px;
-}
-.page {
-  display: inline-block;
-  width: 35px;
-  border-radius: 5px;
-}
-
-.page p{
-  display: grid;
-  place-content: center;
-  text-decoration: underline;
-  cursor: pointer;
-}
-
-.active-page{
-  position: absolute;
-  left: 0%;
-  
-  background-color: #e02e3d;
-  border: 1px solid #ebebeb;
-  border-radius: 4px;
-  height: 29px;
-  width: calc(100% / 10);
-  transition: all 400ms;
-  z-index: -1;
-}
-
-.disabled-page-number{
-  color: gray; 
-  pointer-events: none;
-}
 /* -------------------------------------------------------- MAIN --------------------------------------------- */
 
 .grid-layout{
@@ -277,12 +239,10 @@ header{
   gap: 2rem;
   max-width: 740px;
   margin-inline: auto;
-  /* background-color: blueviolet; */
 }
 
 aside{
   grid-area: aside;
   background-color: rgb(255, 112, 112);
-  border-top-right-radius: 4px;
   margin-top: 41px;
 }

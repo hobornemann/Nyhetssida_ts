@@ -114,7 +114,7 @@ categoryOptions.forEach((category: HTMLLIElement) => {
     })
 })
 
-//TODO: Fråga till Isak: Varför har vi en eventListener på hela main-news-content istället för på 'show-more-cont img' direkt/specifikt? 
+
 // ----------------------SHOW MORE BUTTON--------------------------------
 const mainContentContainer: HTMLUListElement | null = document.querySelector('.main-news-content'); 
 if(mainContentContainer){
@@ -137,9 +137,6 @@ if(mainContentContainer){
 } else {
     console.log('main-news-container is null...');
 }
-
-
-
 
 
 

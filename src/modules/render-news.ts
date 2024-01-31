@@ -20,7 +20,6 @@ export async function getNewsData(url: string | null = null){
     await setArticlesInLocalStorage('renderedArticles', data.articles)
     await updateFavouriteButtonsOfRenderedArticles();
     await addEventListenersToFavouriteButtons();  
-    
   } catch (error) {
     console.log(error)
   }
@@ -72,7 +71,5 @@ export async function renderNewsHTML(data: Articles){
     `
   }).join(''); 
 
-  
   if(newsCont) newsCont.innerHTML = html; 
-
 }

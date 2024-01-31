@@ -2,8 +2,7 @@ import { Article } from "../types/article";
 import { getArticlesFromLocalStorage, setArticlesInLocalStorage} from "./model.ts"
 
 
-
-
+// ----------------------UPDATE FAVOURITE BUTTONS OF RENDERED ARTICLES--------------------------------
 export function updateFavouriteButtonsOfRenderedArticles(): Promise<boolean>{ 
     return new Promise((resolve, reject) => {
         const favouriteButtons: HTMLButtonElement[] | null = Array.from(document.querySelectorAll(".favourite-button"))

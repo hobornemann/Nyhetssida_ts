@@ -1,7 +1,10 @@
 // @ts-nocheck   
 // The above command makes sure that the js-file is not checked as a ts-file when the tsc compiler runs
 
-import { getNewsData, currentDisplayUrl, maxPages } from "./modules/render-news";
+import { getNewsData, currentDisplayUrl, maxPages, renderNewsHTML  } from "./modules/render-news";
+import { getArticlesFromLocalStorage, setArticlesInLocalStorage } from "./modules/model";
+import { Article, Articles } from "./types/article";
+import {updateFavouriteButtonsOfRenderedArticles, addEventListenersToFavouriteButtons} from "./modules/favourites";
 
 
 getNewsData(); 
@@ -72,6 +75,7 @@ categoryOptions.forEach((category: HTMLLIElement) => {
         const parentEl: NodeListOf<HTMLUListElement> = document.querySelectorAll('.categories'); 
         const newsSources = parentEl[0]
         const sportCategories = parentEl[1]
+        const favouriteCategory = parentEl[2]
         const APIkey: string = import.meta.env.VITE_NEWS_API;
         activePageBorder.style.left = '0%';
         formInHeader.classList.remove('show-menu')
@@ -93,6 +97,28 @@ categoryOptions.forEach((category: HTMLLIElement) => {
             
             return 
         }
+
+        if(keyWord && category.closest('.categories') === favouriteCategory){
+            if(keyWord === 'Favourites'){               
+                let favouriteArticles: Article[] | undefined = getArticlesFromLocalStorage('favouriteArticles')
+                let data: Articles = {};
+                if(favouriteArticles){
+                    data.articles = favouriteArticles
+                    renderNewsHTML(data)
+                    setArticlesInLocalStorage('renderedArticles', data.articles)
+                    updateFavouriteButtonsOfRenderedArticles();
+                    addEventListenersToFavouriteButtons();
+                } else {
+                    const newsCont: HTMLUListElement | null = document.querySelector('.main-news-content'); 
+                    if(newsCont && data.articles.length < 1){
+                        return newsCont.innerHTML = "You have not stored any favourite articles yet."
+                    } 
+                }
+            }
+            return 
+        }
+
+
     })
 
 }); 
@@ -137,3 +163,27 @@ if(mainContentContainer){
 } else {
     console.log('main-news-container is null...');
 }
+
+
+
+// ----------------------SHOW FAVOURITE ARTICLES BUTTON--------------------------------
+const showFavouriteArticlesButton: HTMLButtonElement | null = document.querySelector(".show-favourite-articles-button")
+if(showFavouriteArticlesButton){
+    showFavouriteArticlesButton.addEventListener('click', (): void => {
+        let favouriteArticles: Article[] | undefined = getArticlesFromLocalStorage('favouriteArticles')
+        let data: Articles
+        data.articles = favouriteArticles
+        if(favouriteArticles){
+            renderNewsHTML(data)
+        } else {
+            const newsCont: HTMLUListElement | null = document.querySelector('.main-news-content'); 
+            if(newsCont && data.articles.length < 1){
+                return newsCont.innerHTML = "You have not stored any favourite articles yet."
+            } 
+        }
+    })
+}
+
+
+
+

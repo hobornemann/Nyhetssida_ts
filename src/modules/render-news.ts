@@ -3,6 +3,9 @@
 
 import axios from "axios";
 import { Article, Articles } from "../types/article";
+import { getArticlesFromLocalStorage, setArticlesInLocalStorage } from "./model";
+import { updateFavouriteButtonsOfRenderedArticles, addEventListenersToFavouriteButtons } from "./favourites.ts";
+
 import saveLocaleStorage from "./localStorage";
 // localStorage.clear();
 export const currentDisplayUrl= JSON.parse(localStorage.getItem('activeUrl')) || []; 
@@ -34,14 +37,17 @@ export async function getNewsData(url: string | [] | null = null, key:string | n
     }
     // ----------------------------------------------------------------------------------------------
     console.log(maxPages, currentDisplayUrl)
-    renderNewsHTML(data); 
+    await renderNewsHTML(data); 
+    await setArticlesInLocalStorage('renderedArticles', data.articles)
+    await updateFavouriteButtonsOfRenderedArticles();
+    await addEventListenersToFavouriteButtons();  
   } catch (error) {
     console.log(error)
   }
 }
 
-async function renderNewsHTML(data: Articles){
-  const newsCont: HTMLUListElement | null = document.querySelector('.main-news-content'); 
+export async function renderNewsHTML(data: Articles){
+    const newsCont: HTMLUListElement | null = document.querySelector('.main-news-content'); 
   
   if(newsCont && data.articles.length < 1){
     return newsCont.innerHTML = "Unfortunately, there are no news articles available for the choosen category/date/page. Please check back later for updates."
@@ -75,6 +81,7 @@ async function renderNewsHTML(data: Articles){
           <div>
             <p>Show more</p>
             <img src="svg-icon/arrow-down-circle-svgrepo-com.svg" alt="">
+            <button class="favourite-button" data-url="${url}" data>Save as favourite</button>
           </div>
           <article class="content">
           ${content}
@@ -86,6 +93,5 @@ async function renderNewsHTML(data: Articles){
     `
   }).join(''); 
 
-  
   if(newsCont) newsCont.innerHTML = html; 
 }

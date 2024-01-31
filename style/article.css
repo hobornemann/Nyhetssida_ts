@@ -4,7 +4,6 @@
   background-color: white;
   border-top: 2px solid #e02e3d;
   box-shadow: 1px 1px 5px rgba(21, 21, 21, 0.201);
-
   display: flex;
   flex-direction: column;
 }
@@ -72,6 +71,7 @@
   cursor: pointer;
 }
 
+
 .content{
   height: 0px;
   width: 100%;
@@ -82,7 +82,7 @@
   height: auto;
 }
 
-.visit-website-button{
+.visit-website-button, .favourite-button{
   display: block;
   background: rgb(0, 0, 0);
   color: white;
@@ -96,6 +96,12 @@
   border-radius: 8px;
   transition: all 200ms;
   cursor: pointer;
+}
+
+.favourite-button{
+  display: flex;
+  margin-top: 0px;
+  
 }
 
 .visit-website-button:hover{

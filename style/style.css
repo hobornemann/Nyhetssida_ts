@@ -16,10 +16,22 @@ body{
   width: 100vw;
   height: 100vh;
   min-height: auto;
+  overflow: hidden auto;
 }
 
 body::-webkit-scrollbar{
-  display: none;
+  width: 10px;
+  color: #ebebeb;
+}
+
+body::-webkit-scrollbar-track{
+  background-color: rgb(255, 255, 255);
+  border-radius: 100vh;
+}
+
+body::-webkit-scrollbar-thumb{
+  background-color: #e02e3d;
+  height: 50%;
 }
 
 /* ------------------------------------------------HEADER--------------------------------------------- */
@@ -31,7 +43,7 @@ header{
   width: 100%;
   border-bottom: 3px solid #e02e3d;
   background-color: rgb(255, 255, 255);
-  /* z-index: 1000; */
+  z-index: 1000;
 }
 
 .header-content{
@@ -178,7 +190,7 @@ header{
   cursor: pointer;
 }
 
-[data-show-options="true"]{
+.show-options{
   pointer-events: auto;
   filter: blur(0);
   opacity: 1;
@@ -206,6 +218,45 @@ header{
   width: 100%;
 }
 
+/* --------------------------------------------------------PAGES---------------------------------------------- */
+.pages-cont{
+  position: relative;
+  display: flex;
+  align-items: center;
+  background-color: transparent;
+  width: fit-content;
+  height: 41px;
+}
+.page {
+  display: inline-block;
+  width: 35px;
+  border-radius: 5px;
+}
+
+.page p{
+  display: grid;
+  place-content: center;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.active-page{
+  position: absolute;
+  left: 0%;
+  
+  background-color: #e02e3d;
+  border: 1px solid #ebebeb;
+  border-radius: 4px;
+  height: 29px;
+  width: calc(100% / 10);
+  transition: all 400ms;
+  z-index: -1;
+}
+
+.disabled-page-number{
+  color: gray; 
+  pointer-events: none;
+}
 /* -------------------------------------------------------- MAIN --------------------------------------------- */
 
 .grid-layout{
@@ -233,4 +284,5 @@ aside{
   grid-area: aside;
   background-color: rgb(255, 112, 112);
   border-top-right-radius: 4px;
+  margin-top: 41px;
 }

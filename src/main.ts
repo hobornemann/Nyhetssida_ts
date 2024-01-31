@@ -1,13 +1,14 @@
 // @ts-nocheck   
 // The above command makes sure that the js-file is not checked as a ts-file when the tsc compiler runs
 
-import { getNewsData } from "./modules/render-news";
+import { getNewsData, currentDisplayUrl, maxPages } from "./modules/render-news";
 
 
 getNewsData(); 
 // ------------------------------Header--------------------------------
 const header = document.querySelector('header');
 const dateInput: HTMLInputElement | null = document.querySelector('.date-for-filter-search');
+const categories: NodeListOf<HTMLUListElement> = document.querySelectorAll('.categories');
 
 if(header !== null){
     header.addEventListener('click', (el: MouseEvent) => {
@@ -17,8 +18,9 @@ if(header !== null){
         // console.log(dateInput.value)
         if(optionsInHeader && target === headerMenu) return optionsInHeader.classList.toggle('show-menu'); 
         if(dateInput && target === headerInput) return dateInput.classList.add('show-date');  
-        if(dateInput && dateInput.classList.contains('show-date') && target !== dateInput)
-            return dateInput.classList.remove('show-date');
+        if(dateInput && dateInput.classList.contains('show-date') && target !== dateInput) 
+        return dateInput.classList.remove('show-date');
+    
     })
 } else {
     console.log('Header is null'); 
@@ -35,15 +37,17 @@ if(formInHeader !== null){
         const keyWord: string | null = headerInput ? headerInput.value : null 
         const date: string | null = dateInput ? dateInput.value : null
         headerInput!.value = '';
-
+        
         if(keyWord){
-            const url: string  = `https://newsapi.org/v2/everything?q=${keyWord}&from=${date}&sortBy=popularity&apiKey=${import.meta.env.VITE_NEWS_API}`
+            formInHeader.classList.remove('show-menu')
+            const url: string  = `https://newsapi.org/v2/everything?q=${keyWord}&from=${date}&sortBy=popularity&pageSize=10&page=1&apiKey=${import.meta.env.VITE_NEWS_API}`
             getNewsData(url); 
+            activePageBorder.style.left = '0%';
 
         } else if(!keyWord && headerInput){
-            headerInput.value = 'Input is empty..';
+            headerInput.placeholder = 'Input is empty..';
             setTimeout(() => {
-                headerInput.value = '';
+                headerInput.placeholder = '';
             }, 5000);
         }
     }); 
@@ -52,13 +56,12 @@ if(formInHeader !== null){
 const filterContEl = document.querySelector('.filter-cont'); 
 filterContEl?.addEventListener('click', (el: Event) => {
     const filterOptions: NodeListOf<HTMLParagraphElement> = document.querySelectorAll('.filter-options p'); 
-    const categories: NodeListOf<HTMLUListElement> = document.querySelectorAll('.categories');
     const chevronButtonsImage: NodeListOf<HTMLImageElement> = document.querySelectorAll('.chevron-button img');
     const target: EventTarget | null = el.target; 
     
     filterOptions.forEach((option, index: number) => {
-        if((target === option || target == chevronButtonsImage[index])) return categories[index].dataset.showOptions='true'; 
-        if(target !== option && categories[index]) return categories[index].dataset.showOptions='false';
+        if((target === option || target == chevronButtonsImage[index])) return categories[index].classList.toggle('show-options'); 
+        if(target !== option && categories[index]) return categories[index].classList.remove('show-options')
     });
 });
 
@@ -70,11 +73,13 @@ categoryOptions.forEach((category: HTMLLIElement) => {
         const newsSources = parentEl[0]
         const sportCategories = parentEl[1]
         const APIkey: string = import.meta.env.VITE_NEWS_API;
+        activePageBorder.style.left = '0%';
+        formInHeader.classList.remove('show-menu')
 
         if(keyWord && category.closest('.categories') === newsSources){
-            let url = `https://newsapi.org/v2/top-headlines?sources=${keyWord}&apiKey=${APIkey}` 
+            let url = `https://newsapi.org/v2/top-headlines?sources=${keyWord}&pageSize=10&page=1&apiKey=${APIkey}` 
             if(keyWord === 'General'){
-                url = `https://newsapi.org/v2/top-headlines?country=us&category=general&apiKey=${APIkey}`
+                url = `https://newsapi.org/v2/top-headlines?country=us&category=general&pageSize=10&page=1&apiKey=${APIkey}`
                 getNewsData(url);
                 return
             }
@@ -83,13 +88,32 @@ categoryOptions.forEach((category: HTMLLIElement) => {
         }
 
         if(keyWord && category.closest('.categories') === sportCategories){
-            const url = `https://newsapi.org/v2/top-headlines?country=us&category=sports&q=${keyWord}&apiKey=${APIkey}`
+            const url = `https://newsapi.org/v2/top-headlines?country=us&category=sports&pageSize=10&page=1&q=${keyWord}&apiKey=${APIkey}`
             getNewsData(url);
+            
             return 
         }
     })
 
-})
+}); 
+
+// ---------------------------------------------------------------------
+//                                PAGES                                 |
+// ---------------------------------------------------------------------
+const pages: NodeListOf<HTMLLIElement> = document.querySelectorAll('.page'); 
+const activePageBorder: HTMLDivElement | null = document.querySelector('.active-page');
+pages.forEach((page, index) => {
+    page.addEventListener('click', () => {
+        if(Number(page.textContent) > maxPages[0]) return // Lämnar funktionen
+
+        const currentPage = Number(page.textContent);
+        const redBorderPos = (currentPage * 10) - 10;
+        if(activePageBorder) activePageBorder.style.left = `${redBorderPos}%` ;
+        currentDisplayUrl[0] = (currentDisplayUrl[0].replace(currentDisplayUrl[0].substring(currentDisplayUrl[0].indexOf('page='), currentDisplayUrl[0].indexOf('page=') + 6), `page=${currentPage}`))
+        getNewsData(currentDisplayUrl, `apiKey=${import.meta.env.VITE_NEWS_API}`); 
+        console.log(currentDisplayUrl)
+    });
+});
 
 // ----------------------SHOW MORE BUTTON--------------------------------
 const mainContentContainer: HTMLUListElement | null = document.querySelector('.main-news-content'); 

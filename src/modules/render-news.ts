@@ -3,16 +3,37 @@
 
 import axios from "axios";
 import { Article, Articles } from "../types/article";
+import saveLocaleStorage from "./localStorage";
+// localStorage.clear();
+export const currentDisplayUrl= JSON.parse(localStorage.getItem('activeUrl')) || []; 
+export const maxPages = JSON.parse(localStorage.getItem('pages')) || []; 
 
-export async function getNewsData(url: string | null = null){
+export async function getNewsData(url: string | [] | null = null, key:string | null = null, page:number = 1){
+
   const APIkey: string = import.meta.env.VITE_NEWS_API; 
-  const URL: string = (url) ? 
-  url : `https://newsapi.org/v2/top-headlines?country=us&category=general&apiKey=${APIkey}`
+  const URL: string | [] = (url) ? 
+  url : `https://newsapi.org/v2/top-headlines?country=us&category=general&pageSize=10&page=${page}&apiKey=${APIkey}` 
+  if(typeof URL === 'string') currentDisplayUrl[0] = (URL.substring(0, URL.indexOf('apiKey=')))
 
   try {
-    const response = await axios(URL)
+    const response =  (typeof URL === 'string') ? await axios(URL) : await axios(URL[0] + key);
     const data = await response.data; 
-    console.log("data in render-news.ts",data); 
+    console.log("data in render-news.ts", data);    
+    
+    maxPages[0] = (Math.ceil(data.totalResults / 10) > 10) ? 9 : Math.ceil(data.totalResults / 10); 
+    saveLocaleStorage('activeUrl', JSON.stringify(currentDisplayUrl))
+    saveLocaleStorage('pages', JSON.stringify(maxPages))
+
+    // ---------------------------------------------------------------------------------------------
+    const amountOfPages: NodeListOf<HTMLParagraphElement> = document.querySelectorAll('.page p'); 
+    if(maxPages[0]) {
+      amountOfPages.forEach((page, index) => {
+        if(index >= maxPages[0]) return page.classList.add('disabled-page-number');
+        return page.classList.remove('disabled-page-number');
+      });
+    }
+    // ----------------------------------------------------------------------------------------------
+    console.log(maxPages, currentDisplayUrl)
     renderNewsHTML(data); 
   } catch (error) {
     console.log(error)
@@ -23,17 +44,18 @@ async function renderNewsHTML(data: Articles){
   const newsCont: HTMLUListElement | null = document.querySelector('.main-news-content'); 
   
   if(newsCont && data.articles.length < 1){
-    return newsCont.innerHTML = "Unfortunately, there are no news articles available for the choosen date. Please check back later for updates."
+    return newsCont.innerHTML = "Unfortunately, there are no news articles available for the choosen category/date/page. Please check back later for updates."
   }  
   
   const html = data.articles.map((article: Article) => {
     let {author, url, urlToImage, source: {name}, title, description, content } = article;
     
-    if(author === null || url === null || urlToImage === null || name === null || title === null || description === null || content === null )
+    if(url === null || urlToImage === null || name === null || title === null || description === null || content === null )
       return // Objekt med null inuti ska ej visas på skärmen
   
     // content.replace(/(<([^>]+)>)/gi, "")
     content = content.substring(0,content.indexOf('['));
+    if(author == null) author = ''; 
     
   // console.log("article in renderNewsHTML",article)
 

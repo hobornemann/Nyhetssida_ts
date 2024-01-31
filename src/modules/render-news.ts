@@ -66,7 +66,7 @@ async function renderNewsHTML(data: Articles){
         <div class="article-content">
           <a href="${url}"><img src="${urlToImage}" alt="${name} headline picture"></a>
           <div class="title-container">
-          <p style="text-decoration: underline; padding: 10px 0px;"><b>Author: ${author}</b></p>
+          <p style="padding: 10px 0px;"><b>Author: ${author}</b></p>
             <a href="${url}"><h2 class="title" title="Visit the website">${title}</h2></a>
             <p class="sub-title">${description}</p>
           </div>

@@ -1,7 +1,9 @@
 // @ts-nocheck   
 // The above command makes sure that the js-file is not checked as a ts-file when the tsc compiler runs
 
-import { getNewsData } from "./modules/render-news";
+import { getArticlesFromLocalStorage, setArticlesInLocalStorage } from "./modules/model";
+import { getNewsData, renderNewsHTML } from "./modules/render-news";
+import { Article } from "./types/article";
 
 
 getNewsData(); 
@@ -113,3 +115,90 @@ if(mainContentContainer){
 } else {
     console.log('main-news-container is null...');
 }
+
+
+// ----------------------UPDATE FAVOURITE BUTTONS--------------------------------
+function updateFavouriteButtons(){
+
+    
+}
+
+
+
+// ----------------------ADD EVENT LISTENERS TO FAVOURITE BUTTONS--------------------------------
+function addEventListenersToFavouriteButtons(): void {
+    try{
+        const favouriteButtons: HTMLButtonElement[] | null = document.querySelectorAll(".favourite-button")    
+        let favouriteArticles: Article[] | null = getArticlesFromLocalStorage('favouriteArticles')
+        let renderedArticles: Article[] | null = getArticlesFromLocalStorage('renderedArticles')
+
+        favouriteButtons.forEach(button => {
+            button.addEventListener('click', (e: MouseEvent) => {
+                let isFavourite: boolean = button.classList.contains("is-favourite-article")
+                let urlOfClickedArticle: string = e.target.getAttribute('data-url')
+                if(isFavourite){
+                    button.innerText = "Save as favourite"
+                    button.classList.remove("is-favourite-article")
+                    let indexOfArticle: number = favouriteArticles.findIndex(article => article.url === urlOfClickedArticle);
+                    favouriteArticles = favouriteArticles.filter(article => article.url !== urlOfClickedArticle)
+                    setArticlesInLocalStorage('favouriteArticles', favouriteArticles)
+                } else {
+                    button.innerText = "Favourite"
+                    button.classList.add("is-favourite-article")
+                    let clickedArticles: Article[] | null = renderedArticles.find(article => article.url === urlOfClickedArticle);
+                    clickedArticles[0].isFavourite = true
+                    favouriteArticles.push(clickedArticle[0]) 
+                    setArticlesInLocalStorage('favouriteArticles', favouriteArticles)
+                }
+            })
+        })
+    }
+    catch(error:any){
+        console.log("Error in favouriteButtons addEventListener functions", error.message)
+    }  
+}
+
+
+// ----------------------SHOW FAVOURITE ARTICLES BUTTON--------------------------------
+const showFavouriteArticlesButton: HTMLButtonElement | null = document.querySelector(".show-favourite-articles-button")
+if(showFavouriteArticlesButton){
+    showFavouriteArticlesButton.addEventListener('click', (): void => {
+        let favouriteArticles: Article[] | undefined = getArticlesFromLocalStorage('favouriteArticles')
+        let data: Articles
+        data.articles = favouriteArticles
+        if(favouriteArticles){
+            renderNewsHTML(data)
+        } else {
+            const newsCont: HTMLUListElement | null = document.querySelector('.main-news-content'); 
+            if(newsCont && data.articles.length < 1){
+                return newsCont.innerHTML = "You have not stored any favourite articles yet."
+            } 
+        }
+    })
+}
+
+
+
+
+
+
+   /*          
+    if(favouriteButtons){
+        try{
+            
+            if(favouriteArticles && renderedArticles){
+                let favouriteUrls: string[] = favouriteArticles.map(favouriteArticle => favouriteArticle.url) 
+                let renderedFavouriteArticles: Article[] = renderedArticles.filter(renderedArticle => favouriteUrls.includes(renderedArticle.url))
+                if(renderedFavouriteArticles){
+                    renderedFavouriteArticles.map(renderedFavouriteArticle => {
+                        const favouriteButton = favouriteButtons.filter(button => 
+                            button.getAttribute('data-url') === renderedFavouriteArticle.url)
+                            favouriteButton[0].classList.add('isFavourite')
+                            favouriteButton[0].innerText = "Favourite"
+                    })
+                }
+            }
+        }
+        catch(error: any) { console.log("Error in XXX ", error.message)}
+
+ */

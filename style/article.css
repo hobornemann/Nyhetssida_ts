@@ -72,6 +72,11 @@
   cursor: pointer;
 }
 
+
+.isFavourite{
+  background-color: red;
+}
+
 .content{
   height: 0px;
   width: 100%;
@@ -82,7 +87,7 @@
   height: auto;
 }
 
-.visit-website-button{
+.visit-website-button, .favourite-button{
   display: block;
   background: rgb(0, 0, 0);
   color: white;

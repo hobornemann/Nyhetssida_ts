@@ -46,16 +46,16 @@ function getDefaultArticlesObject(){
 
 
 // MODEL 
-async function getArticlesObject(){
+function getArticlesObject(){
   try{
     let articles: Article[];
-    const articlesInLocalStorage = await getArticlesFromLocalStorage();
+    const articlesInLocalStorage = getArticlesFromLocalStorage();
     if(articlesInLocalStorage == null) {
       articles = getDefaultArticlesObject();
+      setArticlesInLocalStorage(articles);
     } else{
       articles = articlesInLocalStorage;
     }
-    setArticlesInLocalStorage(articles);  
     return articles;
   }
   catch (error: any){
@@ -80,6 +80,7 @@ function getArticlesFromLocalStorage(){
   let localStorageData: string | null;   // TODO: OK? Storage funkade inte så bra.
   try{
     localStorageData = localStorage.getItem("articles");
+    console.log("localStorageData in getArtilesFromLocalStorage: ",localStorageData)
     if (localStorageData) {
         articles = JSON.parse(localStorageData);
         return articles;

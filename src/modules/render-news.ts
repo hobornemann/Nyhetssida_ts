@@ -3,6 +3,9 @@
 
 import axios from "axios";
 import { Article, Articles } from "../types/article";
+import { getArticlesFromLocalStorage, setArticlesInLocalStorage } from "./model";
+import { updateFavouriteButtonsOfRenderedArticles } from "./favourites.ts";
+import { addEventListenersToFavouriteButtons } from "./main.ts";
 
 export async function getNewsData(url: string | null = null){
   const APIkey: string = import.meta.env.VITE_NEWS_API; 
@@ -13,14 +16,18 @@ export async function getNewsData(url: string | null = null){
     const response = await axios(URL)
     const data = await response.data; 
     console.log("data in render-news.ts",data); 
-    renderNewsHTML(data); 
+  // TODO:  Hans-Olov: Checka om man måste ta bort eventListeners från gamla favouriteButtons innan man renderar ny HTML, eller om garbage collector tar hand om dem.
+    await renderNewsHTML(data); 
+    updateFavouriteButtonsOfRenderedArticles();
+    addEventListenersToFavouriteButtons();  
+    setArticlesInLocalStorage('renderedArticles', data.articles)
   } catch (error) {
     console.log(error)
   }
 }
 
 async function renderNewsHTML(data: Articles){
-  const newsCont: HTMLUListElement | null = document.querySelector('.main-news-content'); 
+    const newsCont: HTMLUListElement | null = document.querySelector('.main-news-content'); 
   
   if(newsCont && data.articles.length < 1){
     return newsCont.innerHTML = "Unfortunately, there are no news articles available for the choosen date. Please check back later for updates."
@@ -53,6 +60,7 @@ async function renderNewsHTML(data: Articles){
           <div>
             <p>Show more</p>
             <img src="svg-icon/arrow-down-circle-svgrepo-com.svg" alt="">
+            <button class="favourite-button" data-url="${url}" data>Save as favourite</button>
           </div>
           <article class="content">
           ${content}
@@ -66,4 +74,5 @@ async function renderNewsHTML(data: Articles){
 
   
   if(newsCont) newsCont.innerHTML = html; 
+
 }

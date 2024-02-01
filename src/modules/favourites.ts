@@ -35,8 +35,6 @@ export function updateFavouriteButtonsOfRenderedArticles(): Promise<boolean>{
     })
 }
 
-
-
 // ----------------------ADD EVENT LISTENERS TO FAVOURITE BUTTONS--------------------------------
 export function addEventListenersToFavouriteButtons(): Promise<boolean> {
     return new Promise((resolve, reject) => {
@@ -59,7 +57,7 @@ export function addEventListenersToFavouriteButtons(): Promise<boolean> {
                                     localStorage.removeItem('favouriteArticles');
                                 }
                             }
-                            button.innerText = "Save as favourite"
+                            button.innerText = "Save as Favourite"
                             button.classList.remove("is-favourite-article")
                         } else if(!isFavourite) {
                             if(renderedArticles){

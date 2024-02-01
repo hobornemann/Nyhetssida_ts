@@ -19,7 +19,7 @@ export async function getNewsData(url: string | [] | null = null, key:string = n
   if(typeof URL === 'string') currentDisplayUrl[0] = (URL.substring(0, URL.indexOf('apiKey=')))
 
   try {
-    // const response =  (typeof URL === 'string') ? await axios(URL) : await axios(URL[0] + key);
+    const response =  (typeof URL === 'string') ? await axios(URL) : await axios(URL[0] + key);
     const data = await response.data; 
     console.log("data in render-news.ts", data);    
     

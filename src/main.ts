@@ -10,7 +10,7 @@ import {updateFavouriteButtonsOfRenderedArticles, addEventListenersToFavouriteBu
 getNewsData(); 
 // ------------------------------Header--------------------------------
 const header = document.querySelector('header');
-const dateInput: HTMLInputElement | null = document.querySelector('.date-for-filter-search');
+// const dateInput: HTMLInputElement | null = document.querySelector('.date-for-filter-search');
 const categories: NodeListOf<HTMLUListElement> = document.querySelectorAll('.categories');
 
 if(header !== null){
@@ -20,9 +20,9 @@ if(header !== null){
         const target: EventTarget | null = el.target; 
         // console.log(dateInput.value)
         if(optionsInHeader && target === headerMenu) return optionsInHeader.classList.toggle('show-menu'); 
-        if(dateInput && target === headerInput) return dateInput.classList.add('show-date');  
-        if(dateInput && dateInput.classList.contains('show-date') && target !== dateInput) 
-        return dateInput.classList.remove('show-date');
+        // if(dateInput && target === headerInput) return dateInput.classList.add('show-date');  
+        // if(dateInput && dateInput.classList.contains('show-date') && target !== dateInput) 
+        // return dateInput.classList.remove('show-date');
     
     })
 } else {
@@ -38,12 +38,12 @@ if(formInHeader !== null){
         el.preventDefault(); 
 
         const keyWord: string | null = headerInput ? headerInput.value : null 
-        const date: string | null = dateInput ? dateInput.value : null
+        // const date: string | null = dateInput ? dateInput.value : null
         headerInput!.value = '';
         
         if(keyWord){
             formInHeader.classList.remove('show-menu')
-            const url: string  = `https://newsapi.org/v2/everything?q=${keyWord}&from=${date}&sortBy=popularity&pageSize=10&page=1&apiKey=${import.meta.env.VITE_NEWS_API}`
+            const url: string  = `https://newsapi.org/v2/everything?q=${keyWord}&sortBy=popularity&pageSize=10&page=1&apiKey=${import.meta.env.VITE_NEWS_API}`
             getNewsData(url); 
             activePageBorder.style.left = '0%';
 

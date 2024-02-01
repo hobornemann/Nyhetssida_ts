@@ -11,15 +11,15 @@ import saveLocaleStorage from "./localStorage";
 export const currentDisplayUrl= JSON.parse(localStorage.getItem('activeUrl')) || []; 
 export const maxPages = JSON.parse(localStorage.getItem('pages')) || []; 
 
-export async function getNewsData(url: string | [] | null = null, key:string | null = null, page:number = 1){
+export async function getNewsData(url: string | [] | null = null, key:string = null, page:number = 1){
 
   const APIkey: string = import.meta.env.VITE_NEWS_API; 
   const URL: string | [] = (url) ? 
-  url : `https://newsapi.org/v2/top-headlines?country=us&category=general&pageSize=10&page=${page}&apiKey=${APIkey}` 
+  url : `https://newsapi.org/v2/top-headlines?country=us&category=general&pageSize=10&page=${page}&apiKey=${APIkey}`;
   if(typeof URL === 'string') currentDisplayUrl[0] = (URL.substring(0, URL.indexOf('apiKey=')))
 
   try {
-    const response =  (typeof URL === 'string') ? await axios(URL) : await axios(URL[0] + key);
+    // const response =  (typeof URL === 'string') ? await axios(URL) : await axios(URL[0] + key);
     const data = await response.data; 
     console.log("data in render-news.ts", data);    
     
@@ -67,7 +67,7 @@ export async function renderNewsHTML(data: Articles){
 
     return `
     <li class="article-container">
-      <a href="${url}" title="Visit the website"><h1>${name}</h1></a>
+      <a href="${url}" title="Visit the website"><h1>${name}</h1></a><button class="favourite-button" data-url="${url}" data>Save as favourite</button>
       <div>
         <div class="article-content">
           <a href="${url}"><img src="${urlToImage}" alt="${name} headline picture"></a>
@@ -81,7 +81,6 @@ export async function renderNewsHTML(data: Articles){
           <div>
             <p>Show more</p>
             <img src="svg-icon/arrow-down-circle-svgrepo-com.svg" alt="">
-            <button class="favourite-button" data-url="${url}" data>Save as favourite</button>
           </div>
           <article class="content">
           ${content}

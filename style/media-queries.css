@@ -11,10 +11,14 @@
     display: inline-block;
   }
 
+  .filter-options p{
+    justify-content: space-between;
+  }  
+
   .filter-cont{
     position: absolute;
     right: 1px;
-    bottom: -241px;
+    top: calc(100% - -3px);
 
     flex-direction: column;
     background-color: rgb(255, 255, 255);   

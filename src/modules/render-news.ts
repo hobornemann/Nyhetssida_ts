@@ -5,38 +5,29 @@ import axios from "axios";
 import { Article, Articles } from "../types/article";
 import { getArticlesFromLocalStorage, setArticlesInLocalStorage } from "./model";
 import { updateFavouriteButtonsOfRenderedArticles, addEventListenersToFavouriteButtons } from "./favourites.ts";
-
-import saveLocaleStorage from "./localStorage";
+import saveLocaleStorage, {currentDisplayUrl} from "./localStorage";
 // localStorage.clear();
-export const currentDisplayUrl= JSON.parse(localStorage.getItem('activeUrl')) || []; 
-export const maxPages = JSON.parse(localStorage.getItem('pages')) || []; 
 
-export async function getNewsData(url: string | [] | null = null, key:string = null, page:number = 1){
+export async function getNewsData(url: string | null = null, page:number = 1){
 
   const APIkey: string = import.meta.env.VITE_NEWS_API; 
-  const URL: string | [] = (url) ? 
+  const URL: string | null = (url) ? 
   url : `https://newsapi.org/v2/top-headlines?country=us&category=general&pageSize=10&page=${page}&apiKey=${APIkey}`;
-  if(typeof URL === 'string') currentDisplayUrl[0] = (URL.substring(0, URL.indexOf('apiKey=')))
 
   try {
-    const response =  (typeof URL === 'string') ? await axios(URL) : await axios(URL[0] + key);
+    const response = await axios(URL);
     const data = await response.data; 
     console.log("data in render-news.ts", data);    
     
-    maxPages[0] = (Math.ceil(data.totalResults / 10) > 10) ? 9 : Math.ceil(data.totalResults / 10); 
-    saveLocaleStorage('activeUrl', JSON.stringify(currentDisplayUrl))
-    saveLocaleStorage('pages', JSON.stringify(maxPages))
-
     // ---------------------------------------------------------------------------------------------
+    currentDisplayUrl.pages = Math.ceil(data.totalResults / 10); 
+    currentDisplayUrl.url = URL;
     const amountOfPages: NodeListOf<HTMLParagraphElement> = document.querySelectorAll('.page p'); 
-    if(maxPages[0]) {
-      amountOfPages.forEach((page, index) => {
-        if(index >= maxPages[0]) return page.classList.add('disabled-page-number');
-        return page.classList.remove('disabled-page-number');
-      });
-    }
+    amountOfPages.forEach((page, index: number) => {
+      if(index >= currentDisplayUrl.pages) return page.classList.add('disabled-page-number');
+      return page.classList.remove('disabled-page-number');
+    });
     // ----------------------------------------------------------------------------------------------
-    console.log(maxPages, currentDisplayUrl)
     await renderNewsHTML(data); 
     await setArticlesInLocalStorage('renderedArticles', data.articles)
     await updateFavouriteButtonsOfRenderedArticles();

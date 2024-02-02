@@ -1,10 +1,11 @@
 // @ts-nocheck   
 // The above command makes sure that the js-file is not checked as a ts-file when the tsc compiler runs
 
-import { getNewsData, currentDisplayUrl, maxPages, renderNewsHTML  } from "./modules/render-news";
+import { getNewsData, renderNewsHTML  } from "./modules/render-news";
 import { getArticlesFromLocalStorage, setArticlesInLocalStorage } from "./modules/model";
 import { Article, Articles } from "./types/article";
 import {updateFavouriteButtonsOfRenderedArticles, addEventListenersToFavouriteButtons} from "./modules/favourites";
+import { currentDisplayUrl} from "./modules/localStorage";
 
 
 getNewsData(); 
@@ -45,7 +46,7 @@ if(formInHeader !== null){
             formInHeader.classList.remove('show-menu')
             const url: string  = `https://newsapi.org/v2/everything?q=${keyWord}&sortBy=popularity&pageSize=10&page=1&apiKey=${import.meta.env.VITE_NEWS_API}`
             getNewsData(url); 
-            activePageBorder.style.left = '0%';
+            if(activePageBorder) activePageBorder.style.left = '0%';
 
         } else if(!keyWord && headerInput){
             headerInput.placeholder = 'Input is empty..';
@@ -77,8 +78,8 @@ categoryOptions.forEach((category: HTMLLIElement) => {
         const sportCategories = parentEl[1]
         const favouriteCategory = parentEl[2]
         const APIkey: string = import.meta.env.VITE_NEWS_API;
-        activePageBorder.style.left = '0%';
-        formInHeader.classList.remove('show-menu')
+        if(activePageBorder) activePageBorder.style.left = '0%';
+        if(formInHeader) formInHeader.classList.remove('show-menu')
 
         if(keyWord && category.closest('.categories') === newsSources){
             let url = `https://newsapi.org/v2/top-headlines?sources=${keyWord}&pageSize=10&page=1&apiKey=${APIkey}` 
@@ -118,7 +119,6 @@ categoryOptions.forEach((category: HTMLLIElement) => {
         }
 
     })
-
 }); 
 
 // ---------------------------------------------------------------------
@@ -126,16 +126,18 @@ categoryOptions.forEach((category: HTMLLIElement) => {
 // ---------------------------------------------------------------------
 const pages: NodeListOf<HTMLLIElement> = document.querySelectorAll('.page'); 
 const activePageBorder: HTMLDivElement | null = document.querySelector('.active-page');
-pages.forEach((page, index) => {
+pages.forEach((page) => {
     page.addEventListener('click', () => {
-        if(Number(page.textContent) > maxPages[0]) return // Lämnar funktionen
+        if(Number(page.textContent) > currentDisplayUrl.pages) return // Lämnar funktionen
 
+        const indexInReplaceMetod = 7;
         const currentPage = Number(page.textContent);
         const redBorderPos = (currentPage * 10) - 10;
-        if(activePageBorder) activePageBorder.style.left = `${redBorderPos}%` ;
-        currentDisplayUrl[0] = (currentDisplayUrl[0].replace(currentDisplayUrl[0].substring(currentDisplayUrl[0].indexOf('page='), currentDisplayUrl[0].indexOf('page=') + 6), `page=${currentPage}`))
-        getNewsData(currentDisplayUrl, `apiKey=${import.meta.env.VITE_NEWS_API}`); 
-        console.log(currentDisplayUrl)
+        if(activePageBorder) activePageBorder.style.left = `${redBorderPos}%`;
+        
+        currentDisplayUrl.url = (currentDisplayUrl.url.replace(currentDisplayUrl.url.substring(currentDisplayUrl.url.indexOf('page='), currentDisplayUrl.url.indexOf('page=') + indexInReplaceMetod), `page=${currentPage}&`))
+        getNewsData(currentDisplayUrl.url); 
+        // console.log(currentDisplayUrl.url)
     });
 });
 

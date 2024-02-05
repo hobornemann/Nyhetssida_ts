@@ -7,6 +7,48 @@ import { Article, Articles } from "./types/article";
 import {updateFavouriteButtonsOfRenderedArticles, addEventListenersToFavouriteButtons} from "./modules/favourites";
 
 
+// ------------------------------Service Worker - Sandra--------------------------------
+if('serviceWorker' in navigator){
+    navigator.serviceWorker.register('/sw.ts').then(registration => {
+        console.log('Service worker registered with scope: ', registration.scope);
+    }).catch(error => {
+        console.log('Servie worker registration failed: ', error);
+    });
+}
+
+
+// ------------------------------Service Worker ChatGPT--------------------------------
+/* if ('serviceWorker' in navigator) {
+    navigator.serviceWorker
+      //.register('./src/service-worker.ts', { scope: '/' })
+      .register('./src/service-worker.ts')
+      .then((registration) => {
+        //console.log('Service Worker registered with scope:', registration.scope);
+        console.log('Service Worker registered with scope:', registration);
+      })
+      .catch((error) => {
+        console.error('Service Worker registration failed:', error);
+      });
+  } */
+
+
+// ------------------------------Service Worker--------------------------------
+/* if('serviceWorker' in navigator){
+    console.log('Service worker supported')
+    window.addEventListener('load', () => {
+        navigator.serviceWorker
+            .register("../src/service-worker.ts")
+            //.register("../src/sw_cached_pages.ts")  // , { scope: '/' }
+            .then((registrationObject) => {
+                console.log('Service worker registered', registrationObject)  // registrationObject.scope
+            })
+            .catch((error) => {
+                console.log('Service worker error: ', error)
+            });
+    });
+}; */
+
+
 getNewsData(); 
 // ------------------------------Header--------------------------------
 const header = document.querySelector('header');

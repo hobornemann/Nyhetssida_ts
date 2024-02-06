@@ -11,7 +11,7 @@ import {updateFavouriteButtonsOfRenderedArticles, addEventListenersToFavouriteBu
 if('serviceWorker' in navigator){
     navigator.serviceWorker.register('/sw.ts').then(registration => {
         console.log('Service worker registered with scope: ', registration.scope);
-    }).catch(error => {
+    }).catch(function(error){
         console.log('Servie worker registration failed: ', error);
     });
 }

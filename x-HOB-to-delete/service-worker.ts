@@ -1,6 +1,6 @@
 //@ts-nocheck
 
-const CACHE_NAME = 'my-vite-app-cache';
+/* const CACHE_NAME = 'my-vite-app-cache';
 const CACHE_VERSION = 'v1';
 const CACHE_KEY = `${CACHE_NAME}-${CACHE_VERSION}`;
 
@@ -37,4 +37,4 @@ self.addEventListener('fetch', (event: FetchEvent) => {
       return response || fetch(event.request);
     })
   );
-});
+}); */

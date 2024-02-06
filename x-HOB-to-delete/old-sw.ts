@@ -1,6 +1,6 @@
-// @ts-nocheck
+//@ts-nocheck
 
-const CACHE_NAME = 'my-cache-v1';
+const CACHE_NAME = 'my-vite-app-cache';  //  'my-cache-v1';
 const urlsToCache = [
     '/',
     '/style/article.css',
@@ -28,10 +28,11 @@ const urlsToCache = [
     'index.html',
     'package-lock.json',
     'package.json',
-    'tsconfig.json',
+    'tsconfig.json'
 ];
 
 self.addEventListener('install', function(event){
+    console.log("Service worker is installed.");
     event.waitUntil(
         cashes.open(CACHE_NAME)
         .then(function(cache){
@@ -42,6 +43,7 @@ self.addEventListener('install', function(event){
 
 
 self.addEventListener('fetch', function(event){
+    console.log("Service worker is fetching.");
     event.respondWith(
         caches.match(event.request)
         .then(function(response){
@@ -52,4 +54,6 @@ self.addEventListener('fetch', function(event){
         })
     );
 });
+
+
 

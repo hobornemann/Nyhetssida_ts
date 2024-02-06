@@ -1,12 +1,14 @@
-// @ts-nocheck
+//@ts-nocheck
 
 //const CACHE_NAME = 'my-vite-app-cache';
-const myCacheName = 'v1';
+
+//const myCacheName = 'v1';
+
 //const CACHE_VERSION = 'v1';
 //const CACHE_KEY = `${cache_NAME}-${CACHE_VERSION}`;
 //const cacheUrls = ['/'];
 
-// Call install event
+/* // Call install event
 self.addEventListener('install', (event) =>{        // self = service-worker
     console.log("Service Worker installed");
 });
@@ -51,5 +53,5 @@ self.addEventListener('fetch', event => {
 
 
 
-
+ */
 

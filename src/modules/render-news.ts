@@ -9,10 +9,9 @@ import saveLocaleStorage, {currentDisplayUrl} from "./localStorage";
 // localStorage.clear();
 
 export async function getNewsData(url: string | null = null, page:number = 1){
-
   const APIkey: string = import.meta.env.VITE_NEWS_API; 
   const URL: string | null = (url) ? 
-  url : `https://newsapi.org/v2/top-headlines?country=us&category=general&pageSize=10&page=${page}&apiKey=${APIkey}`;
+  url : `https://newsapi.org/v2/top-headlines?country=us&pageSize=10&page=${page}&apiKey=${APIkey}`;
 
   try {
     const response = await axios(URL);
@@ -28,10 +27,10 @@ export async function getNewsData(url: string | null = null, page:number = 1){
       return page.classList.remove('disabled-page-number');
     });
     // ----------------------------------------------------------------------------------------------
-    await renderNewsHTML(data); 
-    await setArticlesInLocalStorage('renderedArticles', data.articles)
-    await updateFavouriteButtonsOfRenderedArticles();
-    await addEventListenersToFavouriteButtons();  
+    renderNewsHTML(data); 
+    setArticlesInLocalStorage('renderedArticles', data.articles)
+    updateFavouriteButtonsOfRenderedArticles();
+    addEventListenersToFavouriteButtons();
   } catch (error) {
     console.log(error)
   }

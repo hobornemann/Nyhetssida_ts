@@ -9,10 +9,10 @@ import {updateFavouriteButtonsOfRenderedArticles, addEventListenersToFavouriteBu
 
 // ------------------------------Service Worker - Sandra--------------------------------
 if('serviceWorker' in navigator){
-    navigator.serviceWorker.register('/sw.ts').then(registration => {
+    navigator.serviceWorker.register('../src/sw.ts').then(registration => {
         console.log('Service worker registered with scope: ', registration.scope);
     }).catch(function(error){
-        console.log('Servie worker registration failed: ', error);
+        console.log('Service worker registration failed: ', error);
     });
 }
 

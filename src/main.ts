@@ -7,8 +7,6 @@ import { Article, Articles } from "./types/article";
 import {updateFavouriteButtonsOfRenderedArticles, addEventListenersToFavouriteButtons} from "./modules/favourites";
 
 
-
-
 // ------------------------------Service Worker - Sandra--------------------------------
 if('serviceWorker' in navigator){
     console.log("Service worker is supported")

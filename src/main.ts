@@ -6,6 +6,7 @@ import { getArticlesFromLocalStorage, setArticlesInLocalStorage } from "./module
 import { Article, Articles } from "./types/article";
 import {updateFavouriteButtonsOfRenderedArticles, addEventListenersToFavouriteButtons} from "./modules/favourites";
 import { currentDisplayUrl} from "./modules/localStorage";
+import { getLiveShares, renderShares, saveShares } from "./modules/liveShares";
 
 
 getNewsData(); 
@@ -183,3 +184,13 @@ if(showFavouriteArticlesButton){
         }
     })
 }
+
+// const nasdaq100p = await getLiveShares(['MSFT', 'AAPl', 'AMZN', 'META'], 'price'); 
+// const nasdaq100e = await getLiveShares(['MSFT', 'AAPl', 'AMZN', 'META'], 'eod'); 
+
+// console.log(nasdaq100)
+// console.log(DJusa)
+console.log(saveShares)
+
+
+const preFixedArray: Data[] = [];

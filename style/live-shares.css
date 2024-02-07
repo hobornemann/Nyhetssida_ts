@@ -1,0 +1,71 @@
+aside{
+  grid-area: aside;
+  background-color: #ebebeb;
+  margin-top: 41px;
+  height: fit-content;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+.liveShare-cont{
+  background: white;
+  height: fit-content;
+  border-top: 2px solid #e02e3d;
+  box-shadow: 1px 1px 5px rgba(21, 21, 21, 0.201);
+
+}
+
+.liveShares-title{
+  font-size: 0.9rem;
+  text-align: center;
+  padding: 15px 0px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.2rem;
+}
+
+.country-logo{
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  object-fit: cover;
+  object-position: center;
+}
+
+.liveShare-tags{
+  /* background-color: aqua; */
+  display: flex;
+  justify-content: space-between;
+  padding: 0px 26px 05px 15px ;
+}
+
+.liveShare-tags p{
+  font-weight: 600;
+  text-decoration: underline;
+}
+
+.company-container{
+  position: relative;
+
+  display: flex;
+  justify-content: space-between;
+  padding: 5px 20px 10px 5px;
+}
+
+.company-container img {
+  position: absolute;
+  right: 4px;
+  bottom: 53%;
+}
+
+.procent-and-price-cont{
+  display: flex;
+  gap: 1rem;
+}
+
+.procent-change{
+  width: 50px;
+}

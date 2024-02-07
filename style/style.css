@@ -1,5 +1,6 @@
 @import url('pages.css');
 @import url('article.css');
+@import url('live-shares.css');
 
 *, ::before, ::after{
   margin: 0;
@@ -31,7 +32,7 @@ body::-webkit-scrollbar-track{
 }
 
 body::-webkit-scrollbar-thumb{
-  background-color: #e02e3d;
+  background-color: #e02e3dcd;
   height: 60%;
 }
 
@@ -231,7 +232,7 @@ header{
   /* width: 1000px; */
   display: grid;
   grid-template-areas: 'main aside';
-  grid-template-columns: 3fr 1fr;
+  grid-template-columns: 3fr 1.6fr;
   gap: 1rem;
   max-width: 1000px;
 }
@@ -243,10 +244,4 @@ header{
   gap: 2rem;
   max-width: 740px;
   margin-inline: auto;
-}
-
-aside{
-  grid-area: aside;
-  background-color: rgb(255, 112, 112);
-  margin-top: 41px;
 }

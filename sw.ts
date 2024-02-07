@@ -26,12 +26,12 @@ const urlsToCache = [
     '/svg-icon/menu-svgrepo-com.svg',
     '/svg-icon/news-svgrepo-com.svg',
     '/svg-icon/search-svgrepo-com (1).svg', 
-    'dummyPage.html',
-    'index.html',
-    'package-lock.json',
-    'package.json',
-    'sw.ts',
-    'tsconfig.json'
+    '/dummyPage.html',
+    '/index.html',
+    '/package-lock.json',
+    '/package.json',
+    '/sw.ts',
+    '/tsconfig.json'
 ];
 
 self.addEventListener('install', function(event){

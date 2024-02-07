@@ -124,7 +124,7 @@ categoryOptions.forEach((category: HTMLLIElement) => {
                     addEventListenersToFavouriteButtons();
                 } else {
                     const newsCont: HTMLUListElement | null = document.querySelector('.main-news-content'); 
-                    if(newsCont && data.articles.length < 1 || undefined){
+                    if(newsCont && data.articles.length < 1 || newsCont === undefined){
                         return newsCont.innerHTML = "You have not stored any favourite articles yet."
                     } 
                 }

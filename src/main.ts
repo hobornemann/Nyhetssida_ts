@@ -1,24 +1,23 @@
 // @ts-nocheck   
 // The above command makes sure that the js-file is not checked as a ts-file when the tsc compiler runs
 
-import { getNewsData, renderNewsHTML  } from "./modules/render-news";
+import { getNewsData, renderNewsHTML, asideNewsfunctionality  } from "./modules/render-news";
 import { getArticlesFromLocalStorage, setArticlesInLocalStorage } from "./modules/model";
 import { Article, Articles } from "./types/article";
 import {updateFavouriteButtonsOfRenderedArticles, addEventListenersToFavouriteButtons} from "./modules/favourites";
 import { currentDisplayUrl} from "./modules/localStorage";
-import { getLiveShares, renderShares, saveShares } from "./modules/liveShares";
+import { getLiveShares, renderLiveShareHTML, renderShares, saveShares } from "./modules/liveShares";
 
 
 getNewsData(); 
 // ------------------------------Header--------------------------------
 const header = document.querySelector('header');
-// const dateInput: HTMLInputElement | null = document.querySelector('.date-for-filter-search');
 const categories: NodeListOf<HTMLUListElement> = document.querySelectorAll('.categories');
 
 if(header !== null){
     header.addEventListener('click', (el: MouseEvent) => {
-        const optionsInHeader: HTMLLIElement |null = document.querySelector('.filter-cont'); 
-        const headerMenu: HTMLImageElement | null = document.querySelector('.top-right-menu'); 
+        const optionsInHeader = document.querySelector('.filter-cont') as HTMLLIElement;
+        const headerMenu = document.querySelector('.top-right-menu') as HTMLImageElement;  
         const target: EventTarget | null = el.target; 
         // console.log(dateInput.value)
         if(optionsInHeader && target === headerMenu) return optionsInHeader.classList.toggle('show-menu'); 
@@ -32,8 +31,8 @@ if(header !== null){
 }
 
 // ---------------------------Search for articles-----------------------------
-const headerInput: HTMLInputElement | null = document.querySelector('#header-input');
-const formInHeader: HTMLInputElement | null = document.querySelector('.filter-cont');
+const headerInput = document.querySelector('#header-input') as HTMLInputElement;
+const formInHeader  = document.querySelector('.filter-cont') as HTMLInputElement;
 
 if(formInHeader !== null){
     formInHeader.addEventListener('submit', (el: SubmitEvent) => {
@@ -62,7 +61,7 @@ const filterContEl = document.querySelector('.filter-cont');
 filterContEl?.addEventListener('click', (el: Event) => {
     const filterOptions: NodeListOf<HTMLParagraphElement> = document.querySelectorAll('.filter-options p'); 
     const chevronButtonsImage: NodeListOf<HTMLImageElement> = document.querySelectorAll('.chevron-button img');
-    const target: EventTarget | null = el.target; 
+    const target = el.target as EventTarget; 
     
     filterOptions.forEach((option, index: number) => {
         if((target === option || target == chevronButtonsImage[index])) return categories[index].classList.toggle('show-options'); 
@@ -75,9 +74,9 @@ categoryOptions.forEach((category: HTMLLIElement) => {
     category.addEventListener('click', () => {
         const keyWord = category.dataset.name; 
         const parentEl: NodeListOf<HTMLUListElement> = document.querySelectorAll('.categories'); 
-        const newsSources = parentEl[0]
-        const sportCategories = parentEl[1]
-        const favouriteCategory = parentEl[2]
+        const newsSources = parentEl[0];
+        const sportCategories = parentEl[1];
+        const favouriteCategory = parentEl[2];
         const APIkey: string = import.meta.env.VITE_NEWS_API;
         if(activePageBorder) activePageBorder.style.left = '0%';
         if(formInHeader) formInHeader.classList.remove('show-menu')
@@ -110,7 +109,7 @@ categoryOptions.forEach((category: HTMLLIElement) => {
                     updateFavouriteButtonsOfRenderedArticles();
                     addEventListenersToFavouriteButtons();
                 } else {
-                    const newsCont: HTMLUListElement | null = document.querySelector('.main-news-content'); 
+                    const newsCont = document.querySelector('.main-news-content') as HTMLUListElement; 
                     if(newsCont && data.articles.length < 1){
                         return newsCont.innerHTML = "You have not stored any favourite articles yet."
                     } 
@@ -118,7 +117,6 @@ categoryOptions.forEach((category: HTMLLIElement) => {
             }
             return 
         }
-
     })
 }); 
 
@@ -126,7 +124,7 @@ categoryOptions.forEach((category: HTMLLIElement) => {
 //                                PAGES                                 |
 // ---------------------------------------------------------------------
 const pages: NodeListOf<HTMLLIElement> = document.querySelectorAll('.page'); 
-const activePageBorder: HTMLDivElement | null = document.querySelector('.active-page');
+const activePageBorder = document.querySelector('.active-page') as HTMLDivElement;
 pages.forEach((page) => {
     page.addEventListener('click', () => {
         if(Number(page.textContent) > currentDisplayUrl.pages) return // Lämnar funktionen
@@ -143,32 +141,28 @@ pages.forEach((page) => {
 });
 
 // ----------------------SHOW MORE BUTTON--------------------------------
-const mainContentContainer: HTMLUListElement | null = document.querySelector('.main-news-content'); 
-if(mainContentContainer){
-    mainContentContainer.addEventListener('click', (el) => {
-        const showMoreIcon = document.querySelectorAll<HTMLImageElement>('.show-more-cont img'); 
-        const showMoreContent = document.querySelectorAll('.content');
-        const target = el.target;
-        console.log(target)
-        
-        showMoreIcon.forEach((icon:HTMLImageElement,index:number) => {
-            if(target === icon){
-                showMoreContent[index].classList.toggle('show-more');
-                
-                if(showMoreContent[index].classList.contains('show-more')) 
-                    return icon.style.transform ='rotate(180deg)'; 
-                return icon.style.transform ='rotate(0deg)'
-            }
-        })
-    }) 
-} else {
-    console.log('main-news-container is null...');
-}
+const mainContentContainer = document.querySelector('.main-news-content') as HTMLUListElement; 
+mainContentContainer.addEventListener('click', (el) => {
+    const showMoreIcon: NodeListOf<HTMLImageElement> = document.querySelectorAll('.show-more-cont img'); 
+    const showMoreContent = document.querySelectorAll('.content');
+    const target = el.target;
+    console.log(target)
+
+    showMoreIcon.forEach((icon:HTMLImageElement,index:number) => {
+        if(target === icon){
+            showMoreContent[index].classList.toggle('show-more');
+            
+            if(showMoreContent[index].classList.contains('show-more')) 
+                return icon.style.transform ='rotate(180deg)'; 
+            return icon.style.transform ='rotate(0deg)'
+        }
+    })
+})
 
 
 
 // ----------------------SHOW FAVOURITE ARTICLES BUTTON--------------------------------
-const showFavouriteArticlesButton: HTMLButtonElement | null = document.querySelector(".show-favourite-articles-button")
+const showFavouriteArticlesButton = document.querySelector(".show-favourite-articles-button") as HTMLButtonElement
 if(showFavouriteArticlesButton){
     showFavouriteArticlesButton.addEventListener('click', (): void => {
         let favouriteArticles: Article[] | undefined = getArticlesFromLocalStorage('favouriteArticles')
@@ -177,7 +171,7 @@ if(showFavouriteArticlesButton){
         if(favouriteArticles){
             renderNewsHTML(data)
         } else {
-            const newsCont: HTMLUListElement | null = document.querySelector('.main-news-content'); 
+            const newsCont = document.querySelector('.main-news-content') as HTMLUListElement; 
             if(newsCont && data.articles.length < 1){
                 return newsCont.innerHTML = "You have not stored any favourite articles yet."
             } 
@@ -185,12 +179,28 @@ if(showFavouriteArticlesButton){
     })
 }
 
-// const nasdaq100p = await getLiveShares(['MSFT', 'AAPl', 'AMZN', 'META'], 'price'); 
-// const nasdaq100e = await getLiveShares(['MSFT', 'AAPl', 'AMZN', 'META'], 'eod'); 
-
-// console.log(nasdaq100)
-// console.log(DJusa)
-console.log(saveShares)
 
 
-const preFixedArray: Data[] = [];
+
+const nasdaq100CurrentPrice = getLiveShares; 
+const nasdaq100EndOfPrice = getLiveShares; 
+
+Promise.all([nasdaq100CurrentPrice(['MSFT', 'AAPl', 'AMZN', 'META'], 'price'), nasdaq100EndOfPrice(['MSFT', 'AAPl', 'AMZN', 'META'], 'eod')])
+.then((values => {
+    renderLiveShareHTML(values);
+}))
+
+
+// console.log(saveShares/* [0]['MSFT']['price'] */)
+// const URLcategories: string[] = ['health','entertainment', 'technology', 'science']
+
+// const AllNewsCategoryURL = URLcategories.map((category, index) => {
+//     return `https://newsapi.org/v2/everything?country=us&category=${categories[index]}&sortBy=popularity&pageSize=10&apiKey=${import.meta.env.VITE_NEWS_API}`;
+// })
+
+// Promise.all([getNewsData(AllNewsCategoryURL[0], 1, 'aside'), getNewsData(AllNewsCategoryURL[1], 1, 'aside'), getNewsData(AllNewsCategoryURL[2], 1, 'aside'), getNewsData(AllNewsCategoryURL[3], 1, 'aside'), getNewsData(AllNewsCategoryURL[4], 1, 'aside')])
+// .then((response) => {
+//     console.log(response.data)
+// })
+
+getNewsData(`https://newsapi.org/v2/everything?q=technology&sortBy=popularity&apiKey=${import.meta.env.VITE_NEWS_API}`, 1, 'aside')

@@ -13,7 +13,6 @@ aside{
   height: fit-content;
   border-top: 2px solid #e02e3d;
   box-shadow: 1px 1px 5px rgba(21, 21, 21, 0.201);
-
 }
 
 .liveShares-title{
@@ -39,7 +38,7 @@ aside{
   /* background-color: aqua; */
   display: flex;
   justify-content: space-between;
-  padding: 0px 26px 05px 15px ;
+  padding: 0px 26px 5px 15px ;
 }
 
 .liveShare-tags p{
@@ -52,7 +51,7 @@ aside{
 
   display: flex;
   justify-content: space-between;
-  padding: 5px 20px 10px 5px;
+  padding: 5px 20px 10px 20px;
 }
 
 .company-container img {
@@ -63,7 +62,7 @@ aside{
 
 .procent-and-price-cont{
   display: flex;
-  gap: 1rem;
+  gap: 2.5rem;
 }
 
 .procent-change{

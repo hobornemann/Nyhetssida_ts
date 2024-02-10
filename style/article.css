@@ -119,8 +119,9 @@
 }
 
 [data-type="aside"]{
-  box-shadow: 1px 1px 5px rgba(21, 21, 21, 0.201);
+  box-shadow: none;
   height: fit-content;
+  text-wrap: balance;
   width: 350px;
 }
 

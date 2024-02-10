@@ -61,6 +61,7 @@ export async function renderNewsHTML(data: Articles, container: string = 'main')
     // console.log("article in renderNewsHTML",article)
     content = content.substring(0,content.indexOf('['));
     if(author == null) author = ''; 
+    const hideContent: string = (container === 'aside') ? 'none' : '';  
     
     return `
     <li class="article-container" data-type="${container}">
@@ -74,7 +75,7 @@ export async function renderNewsHTML(data: Articles, container: string = 'main')
             <p class="sub-title">${description}</p>
           </div>
         </div>
-        <div class="show-more-cont">
+        <div class="show-more-cont" style="display: ${hideContent}">
           <div>
             <p>Show more</p>
             <img src="svg-icon/arrow-down-circle-svgrepo-com.svg" alt="">

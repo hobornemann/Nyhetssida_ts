@@ -3,12 +3,12 @@ import axios from 'axios';
 export const saveShares: Data[] = JSON.parse(localStorage.getItem('shares') || '[]')
 // localStorage.clear();
 export async function getLiveShares(orders: string[], endPoint:string){
-  const apiKey = import.meta.env.VITE_TWELVE_DATA_APIKEY; 
-  const url = `https://api.twelvedata.com/${endPoint}?symbol=${orders.toString()}&apikey=${apiKey}`;
+  // const apiKey = import.meta.env.VITE_TWELVE_DATA_APIKEY; 
+  // const url = `https://api.twelvedata.com/${endPoint}?symbol=${orders.toString()}&apikey=${apiKey}`;
   
-  const response = await axios(url); 
-  const data = await response.data; 
-  return data;
+  // const response = await axios(url); 
+  // const data = await response.data; 
+  // return data;
 }
 interface Nasadaq100 {
   AAPL: {price: string}
@@ -26,9 +26,9 @@ interface EndOfDayPrice{
   timestamp: number; 
 }
 
-type Data = Nasadaq100 | EndOfDayPrice;
+export type Data = Nasadaq100 | EndOfDayPrice;
 
-export function renderLiveShareHTML(data: Data[]){
+export function renderLiveShareHTML(data: Data[]| [void, void]){
   // Dela upp objekten, och dom egenskaperna jag söker efter är price, close och name på aktien. 
   // första objektet innehåller endast price och den andra close. 
   const symbols: string[] = ['MSFT', 'AAPl', 'AMZN', 'META'].sort(); 

@@ -10,7 +10,7 @@ import saveLocaleStorage, {currentDisplayUrl} from "./localStorage";
 
 export async function getNewsData(url: string | null = null, page:number = 1, container:string = 'main'){
   const APIkey: string = import.meta.env.VITE_NEWS_API; 
-  const URL: string | null = (url) ? 
+  const URL: string = (url) ? 
   url : `https://newsapi.org/v2/top-headlines?country=us&category=general&pageSize=10&page=${page}&apiKey=${APIkey}`;
 
   try {
@@ -18,31 +18,20 @@ export async function getNewsData(url: string | null = null, page:number = 1, co
     const data = await response.data; 
     console.log("data in render-news.ts", data);    
     
-    // ---------------------------------------------------------------------------------------------
-    if(container === 'main'){
-      currentDisplayUrl.pages = Math.ceil(data.totalResults / 10); 
-      currentDisplayUrl.url = URL;
-      console.log(currentDisplayUrl.pages)
-      const amountOfPages: NodeListOf<HTMLParagraphElement> = document.querySelectorAll('.page p'); 
-      amountOfPages.forEach((page, index: number) => {
-        if(index >= currentDisplayUrl.pages) return page.classList.add('disabled-page-number');
-        return page.classList.remove('disabled-page-number');
-      });
-    }
-    // ----------------------------------------------------------------------------------------------
+    currentDisplayUrl.url = URL;
     renderNewsHTML(data, container); 
-    setArticlesInLocalStorage('renderedArticles', data.articles)
-    updateFavouriteButtonsOfRenderedArticles();
-    addEventListenersToFavouriteButtons();
+    setArticlesInLocalStorage('renderedArticles-' + container, data.articles)
+    updateFavouriteButtonsOfRenderedArticles(container);
+    // addEventListenersToFavouriteButtons(container);
   } catch (error) {
     console.log(error)
   }
 }
 
 export async function renderNewsHTML(data: Articles, container: string = 'main'){
-    const newsCont = (container === 'main') ? 
-    document.querySelector('.main-news-content') as HTMLUListElement : 
-    document.querySelector('.aside-news-content') as HTMLUListElement; 
+  const newsCont = (container === 'main') ? 
+  document.querySelector('.main-news-content') as HTMLUListElement : 
+  document.querySelector('.aside-news-content') as HTMLUListElement; 
   
   if(data.articles.length < 1){
     return newsCont.innerHTML = "Unfortunately, there are no news articles available for the choosen category/date/page. Please check back later for updates."
@@ -52,6 +41,18 @@ export async function renderNewsHTML(data: Articles, container: string = 'main')
     let {author, url, urlToImage, source: {name}, title, description, content } = article;
     if(url && urlToImage && name && title && description && content) return article;  
   }); 
+
+  // -----------------------------------CALC PAGE AMOUNT----------------------------------------------------------
+  if(container === 'main'){
+    currentDisplayUrl.pages = (data.totalResults) ? Math.ceil(data.totalResults / 10) : 1; 
+    console.log(currentDisplayUrl)
+    const amountOfPages: NodeListOf<HTMLParagraphElement> = document.querySelectorAll('.page p'); 
+    amountOfPages.forEach((page, index: number) => {
+      if(index >= currentDisplayUrl.pages) return page.classList.add('disabled-page-number');
+      return page.classList.remove('disabled-page-number');
+    });
+  }
+  // ----------------------------------------------------------------------------------------------
 
   console.log(filteredArticles.length)
 
@@ -65,7 +66,7 @@ export async function renderNewsHTML(data: Articles, container: string = 'main')
     
     return `
     <li class="article-container" data-type="${container}">
-      <a href="${url}" title="Visit the website"><h1>${name}</h1></a><button class="favourite-button" data-url="${url}" data>Save as favourite</button>
+      <a href="${url}" title="Visit the website"><h1>${name}</h1></a><button class="favourite-button" data-url="${url}">Save as Favourite</button>
       <div>
         <div class="article-content">
           <a href="${url}"><img src="${urlToImage}" alt="${name} headline picture"></a>

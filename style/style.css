@@ -232,8 +232,8 @@ header{
 .main-news-content{
   grid-area: main;
   display: flex;
-  flex-direction: column;
-  gap: 2rem;
+  flex-direction: column-reverse;
+  gap: 0rem;
   max-width: 740px;
   margin-inline: auto;
 }

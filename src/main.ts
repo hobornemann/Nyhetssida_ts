@@ -4,9 +4,9 @@
 import { getNewsData, renderNewsHTML, asideNewsfunctionality  } from "./modules/render-news";
 import { getArticlesFromLocalStorage, setArticlesInLocalStorage } from "./modules/model";
 import { Article, Articles } from "./types/article";
-import {updateFavouriteButtonsOfRenderedArticles, addEventListenersToFavouriteButtons} from "./modules/favourites";
+import {updateFavouriteButtonsOfRenderedArticles, addEventListenersToFavouriteButtons, firstStepsToSaveArticleAsFavourite} from "./modules/favourites";
 import { currentDisplayUrl} from "./modules/localStorage";
-import { getLiveShares, renderLiveShareHTML, renderShares, saveShares } from "./modules/liveShares";
+import { Data, getLiveShares, renderLiveShareHTML, saveShares } from "./modules/liveShares";
 
 
 getNewsData(); 
@@ -105,9 +105,9 @@ categoryOptions.forEach((category: HTMLLIElement) => {
                 if(favouriteArticles){
                     data.articles = favouriteArticles
                     renderNewsHTML(data)
-                    setArticlesInLocalStorage('renderedArticles', data.articles)
-                    updateFavouriteButtonsOfRenderedArticles();
-                    addEventListenersToFavouriteButtons();
+                    // setArticlesInLocalStorage('renderedArticles', data.articles)
+                    // updateFavouriteButtonsOfRenderedArticles();
+                    // addEventListenersToFavouriteButtons();
                 } else {
                     const newsCont = document.querySelector('.main-news-content') as HTMLUListElement; 
                     if(newsCont && data.articles.length < 1){
@@ -145,8 +145,8 @@ const mainContentContainer = document.querySelector('.main-news-content') as HTM
 mainContentContainer.addEventListener('click', (el) => {
     const showMoreIcon: NodeListOf<HTMLImageElement> = document.querySelectorAll('.show-more-cont img'); 
     const showMoreContent = document.querySelectorAll('.content');
-    const target = el.target;
-    console.log(target)
+    const target = el.target as EventTarget;
+    // console.log(target)
 
     showMoreIcon.forEach((icon:HTMLImageElement,index:number) => {
         if(target === icon){
@@ -158,8 +158,6 @@ mainContentContainer.addEventListener('click', (el) => {
         }
     })
 })
-
-
 
 // ----------------------SHOW FAVOURITE ARTICLES BUTTON--------------------------------
 const showFavouriteArticlesButton = document.querySelector(".show-favourite-articles-button") as HTMLButtonElement
@@ -178,29 +176,24 @@ if(showFavouriteArticlesButton){
         }
     })
 }
+// -------------------ADD TO FAVOURITE ADDEVENTLISTENER----------------------
+const gridLayout = document.querySelector('.grid-layout') as HTMLDivElement; 
+gridLayout.addEventListener('click', (el) => {
+    const button = el.target as HTMLButtonElement;
+    if(button.dataset.url) firstStepsToSaveArticleAsFavourite(button);
+});
 
-
-
-
+// ------------------------------RENDER SIDE-NEWS-------------------------------------------------
 const nasdaq100CurrentPrice = getLiveShares; 
 const nasdaq100EndOfPrice = getLiveShares; 
-
 Promise.all([nasdaq100CurrentPrice(['MSFT', 'AAPl', 'AMZN', 'META'], 'price'), nasdaq100EndOfPrice(['MSFT', 'AAPl', 'AMZN', 'META'], 'eod')])
 .then((values => {
     renderLiveShareHTML(values);
-}))
+    setInterval(() => {
+        renderLiveShareHTML(values)
+    }, 5000 * 60);
+}));
+
+getNewsData(`https://newsapi.org/v2/everything?q=technology&sortBy=popularity&apiKey=${import.meta.env.VITE_NEWS_API}`, 1, 'aside');
 
 
-// console.log(saveShares/* [0]['MSFT']['price'] */)
-// const URLcategories: string[] = ['health','entertainment', 'technology', 'science']
-
-// const AllNewsCategoryURL = URLcategories.map((category, index) => {
-//     return `https://newsapi.org/v2/everything?country=us&category=${categories[index]}&sortBy=popularity&pageSize=10&apiKey=${import.meta.env.VITE_NEWS_API}`;
-// })
-
-// Promise.all([getNewsData(AllNewsCategoryURL[0], 1, 'aside'), getNewsData(AllNewsCategoryURL[1], 1, 'aside'), getNewsData(AllNewsCategoryURL[2], 1, 'aside'), getNewsData(AllNewsCategoryURL[3], 1, 'aside'), getNewsData(AllNewsCategoryURL[4], 1, 'aside')])
-// .then((response) => {
-//     console.log(response.data)
-// })
-
-getNewsData(`https://newsapi.org/v2/everything?q=technology&sortBy=popularity&apiKey=${import.meta.env.VITE_NEWS_API}`, 1, 'aside')

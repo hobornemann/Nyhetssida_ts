@@ -136,7 +136,6 @@ pages.forEach((page) => {
         
         currentDisplayUrl.url = (currentDisplayUrl.url.replace(currentDisplayUrl.url.substring(currentDisplayUrl.url.indexOf('page='), currentDisplayUrl.url.indexOf('page=') + indexInReplaceMetod), `page=${currentPage}&`))
         getNewsData(currentDisplayUrl.url); 
-        // console.log(currentDisplayUrl.url)
     });
 });
 
@@ -177,7 +176,7 @@ if(showFavouriteArticlesButton){
     })
 }
 // -------------------ADD TO FAVOURITE ADDEVENTLISTENER----------------------
-const gridLayout = document.querySelector('.grid-layout') as HTMLDivElement; 
+const gridLayout = document.querySelector('.grid-layout') as HTMLDivElement; /* Innehåller både main och aside Element */
 gridLayout.addEventListener('click', (el) => {
     const button = el.target as HTMLButtonElement;
     if(button.dataset.url) firstStepsToSaveArticleAsFavourite(button);
@@ -189,9 +188,11 @@ const nasdaq100EndOfPrice = getLiveShares;
 Promise.all([nasdaq100CurrentPrice(['MSFT', 'AAPl', 'AMZN', 'META'], 'price'), nasdaq100EndOfPrice(['MSFT', 'AAPl', 'AMZN', 'META'], 'eod')])
 .then((values => {
     renderLiveShareHTML(values);
+    const endOfPrice = values[1];  
+    console.log(endOfPrice);
     setInterval(() => {
-        renderLiveShareHTML(values)
-    }, 5000 * 60);
+        renderLiveShareHTML([nasdaq100CurrentPrice(['MSFT', 'AAPl', 'AMZN', 'META'], 'price'), endOfPrice]);
+    }, 5000 * 60); /* Uppdateras var femte minut. */
 }));
 
 getNewsData(`https://newsapi.org/v2/everything?q=technology&sortBy=popularity&apiKey=${import.meta.env.VITE_NEWS_API}`, 1, 'aside');

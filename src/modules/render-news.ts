@@ -45,7 +45,6 @@ export async function renderNewsHTML(data: Articles, container: string = 'main')
   // -----------------------------------CALC PAGE AMOUNT----------------------------------------------------------
   if(container === 'main'){
     currentDisplayUrl.pages = (data.totalResults) ? Math.ceil(data.totalResults / 10) : 1; 
-    console.log(currentDisplayUrl)
     const amountOfPages: NodeListOf<HTMLParagraphElement> = document.querySelectorAll('.page p'); 
     amountOfPages.forEach((page, index: number) => {
       if(index >= currentDisplayUrl.pages) return page.classList.add('disabled-page-number');

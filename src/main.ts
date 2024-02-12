@@ -185,15 +185,21 @@ gridLayout.addEventListener('click', (el) => {
 // ------------------------------RENDER SIDE-NEWS-------------------------------------------------
 const nasdaq100CurrentPrice = getLiveShares; 
 const nasdaq100EndOfPrice = getLiveShares; 
+
 Promise.all([nasdaq100CurrentPrice(['MSFT', 'AAPl', 'AMZN', 'META'], 'price'), nasdaq100EndOfPrice(['MSFT', 'AAPl', 'AMZN', 'META'], 'eod')])
 .then((values => {
     renderLiveShareHTML(values);
     const endOfPrice = values[1];  
     console.log(endOfPrice);
+    return endOfPrice; 
+})).then(data => {
     setInterval(() => {
-        renderLiveShareHTML([nasdaq100CurrentPrice(['MSFT', 'AAPl', 'AMZN', 'META'], 'price'), endOfPrice]);
-    }, 5000 * 60); /* Uppdateras var femte minut. */
-}));
+        Promise.all([nasdaq100CurrentPrice(['MSFT', 'AAPl', 'AMZN', 'META'], 'price'), data])
+        .then(values => {
+            renderLiveShareHTML(values); 
+        })
+    }, 5000 * 60); 
+});
 
 getNewsData(`https://newsapi.org/v2/everything?q=technology&sortBy=popularity&apiKey=${import.meta.env.VITE_NEWS_API}`, 1, 'aside');
 

@@ -1,37 +1,8 @@
 //@ts-nocheck
 
-const CACHE_NAME = 'my-vite-app-cache';  //  'my-cache-v1';
+const CACHE_NAME = 'my-vite-app-cache';  
 const urlsToCache = [
-    '/',
-    '/src/modules/favourites.ts',
-    '/src/modules/localStorage.ts',
-    '/src/modules/model.ts',
-    '/src/modules/render-news.ts',
-    '/src/types/article.d.ts',
-    '/src/types/index.d.ts',
-    '/src/main.ts',
-    '/src/vite-env-d.ts',
-    '/style/article.css',
-    '/style/media-queries.css',
-    '/style/pages.css',
-    '/style/style.css',
-    '/svg-icon/account-svgrepo-com.svg',
-    '/svg-icon/american-football-svgrepo-com.svg',
-    '/svg-icon/arrow-down-circle-svgrepo-com.svg',
-    '/svg-icon/calender-svgrepo-com.svg',
-    '/svg-icon/chevron-left-svgrepo-com.svg',
-    '/svg-icon/favourite-star-black-svgrepo-com.svg',
-    '/svg-icon/favourite-star-red-svgrepo-com.svg',
-    '/svg-icon/favourite-star-svgrepo-com.svg',
-    '/svg-icon/menu-svgrepo-com.svg',
-    '/svg-icon/news-svgrepo-com.svg',
-    '/svg-icon/search-svgrepo-com (1).svg', 
-    '/dummyPage.html',
-    '/index.html',
-    '/package-lock.json',
-    '/package.json',
-    '/sw.ts',
-    '/tsconfig.json'
+    'index.html'
 ];
 
 self.addEventListener('install', function(event){
@@ -39,7 +10,26 @@ self.addEventListener('install', function(event){
     event.waitUntil(
         caches.open(CACHE_NAME)
         .then(function(cache){
-            return cache.addAll(urlsToCache);
+            console.log("Service worker is caching files");
+            /* return */ cache.addAll(urlsToCache);
+        })
+    );
+});
+
+
+
+self.addEventListener('activate', function(event){
+    console.log("Service worker is activated.");
+    event.waitUntil(
+        caches.keys().then(function(cacheNames) {
+            return Promise.all(
+                cacheNames.map(function(cacheName) {
+                    if (cacheName !== CACHE_NAME) {
+                        console.log('Deleting old cache:', cacheName);
+                        return caches.delete(cacheName);
+                    }
+                })
+            );
         })
     );
 });
@@ -57,3 +47,4 @@ self.addEventListener('fetch', function(event){
         })
     );
 });
+

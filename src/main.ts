@@ -44,21 +44,29 @@ if(formInHeader !== null){
         
         if(keyWord){
             formInHeader.classList.remove('show-menu')
-            const url: string  = `https://newsapi.org/v2/everything?q=${keyWord}&sortBy=popularity&pageSize=10&page=1&apiKey=${import.meta.env.VITE_NEWS_API}`
+            const url: string  = `https://newsapi.org/v2/everything?q=${keyWord}&sortBy=popularity&frmo=&pageSize=10&page=1&apiKey=${import.meta.env.VITE_NEWS_API}`
             getNewsData(url); 
             if(activePageBorder) activePageBorder.style.left = '0%';
 
         } else if(!keyWord && headerInput){
             headerInput.placeholder = 'Input is empty..';
             setTimeout(() => {
-                headerInput.placeholder = '';
+                headerInput.placeholder = 'Search';
             }, 5000);
         }
     }); 
 }
 
-const filterContEl = document.querySelector('.filter-cont'); 
-filterContEl?.addEventListener('click', (el: Event) => {
+// --------------------------SET DATE-------------------------------------
+// const dateInputEL = document.querySelector('#date') as HTMLInputElement; 
+// dateInputEL.addEventListener('change', () => {
+//     getNewsData(currentDisplayUrl.url, dateInputEL.value); 
+// }); 
+
+// // ------------------------------------------------------------------------
+
+const filterContEl = document.querySelector('.filter-cont') as HTMLUListElement; 
+filterContEl.addEventListener('click', (el: Event) => {
     const filterOptions: NodeListOf<HTMLParagraphElement> = document.querySelectorAll('.filter-options p'); 
     const chevronButtonsImage: NodeListOf<HTMLImageElement> = document.querySelectorAll('.chevron-button img');
     const target = el.target as EventTarget; 
@@ -82,9 +90,9 @@ categoryOptions.forEach((category: HTMLLIElement) => {
         if(formInHeader) formInHeader.classList.remove('show-menu')
 
         if(keyWord && category.closest('.categories') === newsSources){
-            let url = `https://newsapi.org/v2/top-headlines?sources=${keyWord}&pageSize=10&page=1&apiKey=${APIkey}` 
+            let url = `https://newsapi.org/v2/top-headlines?sources=${keyWord}&from=&pageSize=10&page=1&apiKey=${APIkey}` 
             if(keyWord === 'General'){
-                url = `https://newsapi.org/v2/top-headlines?country=us&category=general&pageSize=10&page=1&apiKey=${APIkey}`
+                url = `https://newsapi.org/v2/top-headlines?country=us&from=&category=general&pageSize=10&page=1&apiKey=${APIkey}`
                 getNewsData(url);
                 return
             }
@@ -93,7 +101,7 @@ categoryOptions.forEach((category: HTMLLIElement) => {
         }
 
         if(keyWord && category.closest('.categories') === sportCategories){
-            const url = `https://newsapi.org/v2/top-headlines?country=us&category=sports&pageSize=10&page=1&q=${keyWord}&apiKey=${APIkey}`
+            const url = `https://newsapi.org/v2/top-headlines?country=us&category=sports&from=&pageSize=10&page=1&q=${keyWord}&apiKey=${APIkey}`
             getNewsData(url);        
             return 
         }
@@ -179,15 +187,15 @@ gridLayout.addEventListener('click', (el) => {
 });
 
 // ------------------------------RENDER SIDE-NEWS-------------------------------------------------
-// const nasdaq100CurrentPrice = getLiveShares; 
-// const nasdaq100EndOfPrice = getLiveShares; 
-// let endOfPrice = []; 
-// Promise.all([nasdaq100CurrentPrice(['MSFT', 'AAPl', 'AMZN', 'META'], 'price'), nasdaq100EndOfPrice(['MSFT', 'AAPl', 'AMZN', 'META'], 'eod')])
-// .then((values => {
-//     renderLiveShareHTML(values);
-//     endOfPrice = values[1];  
-//     console.log(endOfPrice);   
-// }));
+const nasdaq100CurrentPrice = getLiveShares; 
+const nasdaq100EndOfPrice = getLiveShares; 
+let endOfPrice = []; 
+Promise.all([nasdaq100CurrentPrice(['MSFT', 'AAPl', 'AMZN', 'META'], 'price'), nasdaq100EndOfPrice(['MSFT', 'AAPl', 'AMZN', 'META'], 'eod')])
+.then((values => {
+    renderLiveShareHTML(values);
+    endOfPrice = values[1];  
+    console.log(endOfPrice);   
+}));
 
 // setInterval(() => {
 //     Promise.all([nasdaq100CurrentPrice(['MSFT', 'AAPl', 'AMZN', 'META'], 'price'), endOfPrice])
@@ -198,6 +206,6 @@ gridLayout.addEventListener('click', (el) => {
 // }, (3500 * 60)); 
 
 
-getNewsData(`https://newsapi.org/v2/everything?q=technology&sortBy=popularity&apiKey=${import.meta.env.VITE_NEWS_API}`, 1, 'aside');
+getNewsData(`https://newsapi.org/v2/everything?q=technology&sortBy=popularity&apiKey=${import.meta.env.VITE_NEWS_API}`, null, 1, 'aside');
 
 

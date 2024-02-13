@@ -101,13 +101,9 @@ categoryOptions.forEach((category: HTMLLIElement) => {
         if(keyWord && category.closest('.categories') === favouriteCategory){
             if(keyWord === 'Favourites'){               
                 let favouriteArticles: Article[] | undefined = getArticlesFromLocalStorage('favouriteArticles')
-                let data: Articles = {};
                 if(favouriteArticles){
-                    data.articles = favouriteArticles
-                    renderNewsHTML(data)
-                    // setArticlesInLocalStorage('renderedArticles', data.articles)
-                    // updateFavouriteButtonsOfRenderedArticles();
-                    // addEventListenersToFavouriteButtons();
+                    renderNewsHTML(favouriteArticles)
+                    updateFavouriteButtonsOfRenderedArticles();
                 } else {
                     const newsCont = document.querySelector('.main-news-content') as HTMLUListElement; 
                     if(newsCont && data.articles.length < 1){
@@ -183,23 +179,24 @@ gridLayout.addEventListener('click', (el) => {
 });
 
 // ------------------------------RENDER SIDE-NEWS-------------------------------------------------
-const nasdaq100CurrentPrice = getLiveShares; 
-const nasdaq100EndOfPrice = getLiveShares; 
+// const nasdaq100CurrentPrice = getLiveShares; 
+// const nasdaq100EndOfPrice = getLiveShares; 
+// let endOfPrice = []; 
+// Promise.all([nasdaq100CurrentPrice(['MSFT', 'AAPl', 'AMZN', 'META'], 'price'), nasdaq100EndOfPrice(['MSFT', 'AAPl', 'AMZN', 'META'], 'eod')])
+// .then((values => {
+//     renderLiveShareHTML(values);
+//     endOfPrice = values[1];  
+//     console.log(endOfPrice);   
+// }));
 
-Promise.all([nasdaq100CurrentPrice(['MSFT', 'AAPl', 'AMZN', 'META'], 'price'), nasdaq100EndOfPrice(['MSFT', 'AAPl', 'AMZN', 'META'], 'eod')])
-.then((values => {
-    renderLiveShareHTML(values);
-    const endOfPrice = values[1];  
-    console.log(endOfPrice);
-    return endOfPrice; 
-})).then(data => {
-    setInterval(() => {
-        Promise.all([nasdaq100CurrentPrice(['MSFT', 'AAPl', 'AMZN', 'META'], 'price'), data])
-        .then(values => {
-            renderLiveShareHTML(values); 
-        })
-    }, 5000 * 60); 
-});
+// setInterval(() => {
+//     Promise.all([nasdaq100CurrentPrice(['MSFT', 'AAPl', 'AMZN', 'META'], 'price'), endOfPrice])
+//     .then(values => {
+//         console.log('another lap');
+//         renderLiveShareHTML(values); 
+//     })
+// }, (3500 * 60)); 
+
 
 getNewsData(`https://newsapi.org/v2/everything?q=technology&sortBy=popularity&apiKey=${import.meta.env.VITE_NEWS_API}`, 1, 'aside');
 

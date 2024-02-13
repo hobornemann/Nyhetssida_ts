@@ -5,7 +5,7 @@ import axios from "axios";
 import { Article, Articles } from "../types/article";
 import { getArticlesFromLocalStorage, setArticlesInLocalStorage } from "./model";
 import { updateFavouriteButtonsOfRenderedArticles, addEventListenersToFavouriteButtons } from "./favourites.ts";
-import saveLocaleStorage, {currentDisplayUrl} from "./localStorage";
+import saveLocaleStorage, {currentDisplayUrl, renderedArticles} from "./localStorage";
 // localStorage.clear();
 
 export async function getNewsData(url: string | null = null, page:number = 1, container:string = 'main'){
@@ -18,47 +18,55 @@ export async function getNewsData(url: string | null = null, page:number = 1, co
     const data = await response.data; 
     console.log("data in render-news.ts", data);    
     
-    currentDisplayUrl.url = URL;
-    renderNewsHTML(data, container); 
-    setArticlesInLocalStorage('renderedArticles-' + container, data.articles)
-    updateFavouriteButtonsOfRenderedArticles(container);
+    // ------------------------FILTRERAR BORT ARTIKLAR MED NULL------------------------------
+    const filteredArticles: Article[] = data.articles.filter((article: Article) => {
+      let {author, url, urlToImage, source: {name}, title, description, content } = article;
+      if(url && urlToImage && name && title && description && content) return article;  
+    }); 
+
+    const arrOfRenderedURL = renderedArticles.map((article) => article.url);     
+    if(arrOfRenderedURL.length > 0){
+       filteredArticles.forEach(article => {
+        if(!arrOfRenderedURL.includes(article.url)) renderedArticles.push(article)
+       })
+      
+    } else {
+      filteredArticles.forEach(article => renderedArticles.push(article)); 
+    }
+
+    if(container === 'main') currentDisplayUrl.url = URL;
+    renderNewsHTML(filteredArticles, container, data.totalResults); 
+    setArticlesInLocalStorage('renderedArticles', renderedArticles);
+    updateFavouriteButtonsOfRenderedArticles();
     // addEventListenersToFavouriteButtons(container);
   } catch (error) {
     console.log(error)
   }
 }
 
-export async function renderNewsHTML(data: Articles, container: string = 'main'){
+export async function renderNewsHTML(articles: Article[], container: string = 'main', totalResults=null){
   const newsCont = (container === 'main') ? 
   document.querySelector('.main-news-content') as HTMLUListElement : 
   document.querySelector('.aside-news-content') as HTMLUListElement; 
   
-  if(data.articles.length < 1){
+  if(articles.length < 1){
     return newsCont.innerHTML = "Unfortunately, there are no news articles available for the choosen category/date/page. Please check back later for updates."
   }  
-  
-  const filteredArticles: Article[] = data.articles.filter((article: Article) => {
-    let {author, url, urlToImage, source: {name}, title, description, content } = article;
-    if(url && urlToImage && name && title && description && content) return article;  
-  }); 
 
   // -----------------------------------CALC PAGE AMOUNT----------------------------------------------------------
   if(container === 'main'){
-    currentDisplayUrl.pages = (data.totalResults) ? Math.ceil(data.totalResults / 10) : 1; 
+    currentDisplayUrl.pages = (totalResults) ? Math.ceil(totalResults / 10) : 1; 
     const amountOfPages: NodeListOf<HTMLParagraphElement> = document.querySelectorAll('.page p'); 
     amountOfPages.forEach((page, index: number) => {
       if(index >= currentDisplayUrl.pages) return page.classList.add('disabled-page-number');
       return page.classList.remove('disabled-page-number');
     });
   }
-  // ----------------------------------------------------------------------------------------------
+// ----------------------------------------------------------------------------------------------
 
-  console.log(filteredArticles.length)
-
-  const html: string = filteredArticles.map(article => {
+  const html: string = articles.map(article => {
     let {author, url, urlToImage, source: {name}, title, description, content } = article;
-    // return // content.replace(/(<([^>]+)>)/gi, "")
-    // console.log("article in renderNewsHTML",article)
+
     content = content.substring(0,content.indexOf('['));
     if(author == null) author = ''; 
     const hideContent: string = (container === 'aside') ? 'none' : '';  
@@ -92,23 +100,19 @@ export async function renderNewsHTML(data: Articles, container: string = 'main')
 
   if(html.length < 1) return newsCont.innerText = "Unfortunately, there are no news articles available for the choosen category/date/page. Please check back later for updates."
   if(html.length > 1) newsCont.innerHTML = html; 
-  if(container == 'aside') asideNewsfunctionality(filteredArticles.length);
+  if(container == 'aside') asideNewsfunctionality(articles.length);
 }
 
 export function asideNewsfunctionality(amountOfArticle: number){
   const asideNewsContainer = document.querySelector('.aside-news-content') as HTMLUListElement;
   const asideNewsContainerWidth = asideNewsContainer.offsetWidth * amountOfArticle; 
   let xCoord = 350;  
-
-  console.log(asideNewsContainerWidth)
+  
   asideNewsContainer.scroll({top: 0, left: xCoord, behavior: 'instant'});
 
   const setIntervalId = setInterval(() => {
     if(xCoord > asideNewsContainerWidth) {
       clearInterval(setIntervalId);
-      console.log('xCoord: ' + xCoord ); 
-      xCoord = 0; 
-      getNewsData(`https://newsapi.org/v2/everything?q=health&sortBy=popularity&apiKey=${import.meta.env.VITE_NEWS_API}`, 1, 'aside');
     } 
 
     asideNewsContainer.scroll({top: 0, left: xCoord, behavior: 'smooth'});

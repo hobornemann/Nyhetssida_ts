@@ -37,14 +37,19 @@ self.addEventListener('activate', function(event){
 
 self.addEventListener('fetch', function(event){
     console.log("Service worker is fetching.");
-    event.respondWith(
-        caches.match(event.request)
-        .then(function(response){
-            if(response){
-                return response;
-            }
-            return fetch(event.request);
-        })
-    );
+    try{
+        event.respondWith(
+            caches.match(event.request)
+            .then(function(response){
+                if(response){
+                    return response;
+                }
+                return fetch(event.request);
+            })
+        );
+    }
+    catch(error){
+        console.log("Service Worker: Error when fetching.")
+    }
 });
 

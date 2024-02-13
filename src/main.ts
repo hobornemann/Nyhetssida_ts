@@ -17,6 +17,9 @@ if('serviceWorker' in navigator){
     });
 }
 
+window.addEventListener('offline', () =>{
+    location.reload();
+})
 
 getNewsData(); 
 

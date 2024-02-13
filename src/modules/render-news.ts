@@ -43,6 +43,8 @@ export async function getNewsData(url: string | [] | null = null, key:string = n
     await addEventListenersToFavouriteButtons();  
   } catch (error) {
     console.log(error)
+    console.log("ERROR when fetching in render-news.ts")
+    location.reload();
   }
 }
 

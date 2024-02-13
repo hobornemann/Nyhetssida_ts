@@ -23,7 +23,7 @@ function setArticlesInLocalStorage(nameOfLocalStorageObject: string, articles: A
 function getArticlesFromLocalStorage(nameOfLocalStorageObject: string): Article[] | undefined {
     let articles: Article[] | undefined;
     let localStorageData: string | null;   
-    console.log("nameOfLocalStorageObject", nameOfLocalStorageObject)
+    //console.log("nameOfLocalStorageObject", nameOfLocalStorageObject)
     try{
       localStorageData = localStorage.getItem(nameOfLocalStorageObject);
       if(localStorageData){

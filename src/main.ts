@@ -1,7 +1,7 @@
 // @ts-nocheck   
 // The above command makes sure that the js-file is not checked as a ts-file when the tsc compiler runs
 
-import { getNewsData, renderNewsHTML, asideNewsfunctionality  } from "./modules/render-news";
+import { getNewsData, renderNewsHTML, asideNewsfunctionality, mostRecentUrl  } from "./modules/render-news";
 import { getArticlesFromLocalStorage, setArticlesInLocalStorage } from "./modules/model";
 import { Article, Articles } from "./types/article";
 import {updateFavouriteButtonsOfRenderedArticles, addEventListenersToFavouriteButtons, firstStepsToSaveArticleAsFavourite} from "./modules/favourites";
@@ -10,14 +10,15 @@ import { Data, EndOfDayPrice, Nasadaq100, getLiveShares, renderLiveShareHTML, sa
 
 
 
-if(currentDisplayUrl[0]){
-    getNewsData(currentDisplayUrl, `apiKey=${import.meta.env.VITE_NEWS_API}`); 
+if(JSON.parse(localStorage.getItem('mostRecentUrlExclApiKey'))){
+       getNewsData(JSON.parse(localStorage.getItem('mostRecentUrlExclApiKey'))+"apiKey="+import.meta.env.VITE_NEWS_API); 
 } else {
     getNewsData(); 
 }
 
 
-// ------------------------------Service Worker - Sandra--------------------------------
+
+// ------------------------------Service Worker --------------------------------
 if('serviceWorker' in navigator){
     console.log("Service worker is supported")
     navigator.serviceWorker.register('/sw.ts').then(function(registration) {

@@ -9,7 +9,24 @@ import { currentDisplayUrl} from "./modules/localStorage";
 import { Data, EndOfDayPrice, Nasadaq100, getLiveShares, renderLiveShareHTML, saveShares } from "./modules/liveShares";
 
 
+// ------------------------------Service Worker - Sandra--------------------------------
+if('serviceWorker' in navigator){
+    console.log("Service worker is supported")
+    navigator.serviceWorker.register('/sw.ts').then(function(registration) {
+        console.log('Service worker registered with scope: ', registration.scope);
+    }).catch(function(error){
+        console.log('Service worker registration failed: ', error);
+    });
+}
+
+window.addEventListener('offline', () =>{
+    location.reload();
+})
+
 getNewsData(); 
+
+
+
 // ------------------------------Header--------------------------------
 const header = document.querySelector('header');
 const categories: NodeListOf<HTMLUListElement> = document.querySelectorAll('.categories');

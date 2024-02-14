@@ -43,6 +43,7 @@ export async function getNewsData(url: string | null = null, date=null, page:num
     // addEventListenersToFavouriteButtons(container);
   } catch (error) {
     console.log(error)
+    console.log("ERROR when fetching in render-news.ts")
   }
 }
 

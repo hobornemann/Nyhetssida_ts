@@ -1,10 +1,18 @@
 // @ts-nocheck   
 // The above command makes sure that the js-file is not checked as a ts-file when the tsc compiler runs
 
-import { getNewsData, currentDisplayUrl, maxPages, renderNewsHTML  } from "./modules/render-news";
+import { getNewsData, currentDisplayUrl, maxPages, renderNewsHTML, currentUrl  } from "./modules/render-news";
 import { getArticlesFromLocalStorage, setArticlesInLocalStorage } from "./modules/model";
 import { Article, Articles } from "./types/article";
 import {updateFavouriteButtonsOfRenderedArticles, addEventListenersToFavouriteButtons} from "./modules/favourites";
+
+
+
+if(currentDisplayUrl[0]){
+    getNewsData(currentDisplayUrl, `apiKey=${import.meta.env.VITE_NEWS_API}`); 
+} else {
+    getNewsData(); 
+}
 
 
 // ------------------------------Service Worker - Sandra--------------------------------
@@ -17,11 +25,12 @@ if('serviceWorker' in navigator){
     });
 }
 
-window.addEventListener('offline', () =>{
+window.addEventListener('offline', () =>{    
     location.reload();
 })
 
-getNewsData(); 
+
+
 
 
 

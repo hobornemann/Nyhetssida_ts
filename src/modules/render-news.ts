@@ -17,8 +17,10 @@ export async function getNewsData(url: string | [] | null = null, key:string = n
   const URL: string | [] = (url) ? 
   url : `https://newsapi.org/v2/top-headlines?country=us&category=general&pageSize=10&page=${page}&apiKey=${APIkey}`;
   if(typeof URL === 'string') currentDisplayUrl[0] = (URL.substring(0, URL.indexOf('apiKey=')))
-
+  console.log("currentDisplayUrl[0]: ",currentDisplayUrl[0]);
+  
   try {
+
     const response =  (typeof URL === 'string') ? await axios(URL) : await axios(URL[0] + key);
     const data = await response.data; 
     console.log("data in render-news.ts", data);    

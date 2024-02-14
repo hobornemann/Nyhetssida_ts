@@ -6,7 +6,7 @@ import { getArticlesFromLocalStorage, setArticlesInLocalStorage } from "./module
 import { Article, Articles } from "./types/article";
 import {updateFavouriteButtonsOfRenderedArticles, addEventListenersToFavouriteButtons, firstStepsToSaveArticleAsFavourite} from "./modules/favourites";
 import { currentDisplayUrl} from "./modules/localStorage";
-import { Data, getLiveShares, renderLiveShareHTML, saveShares } from "./modules/liveShares";
+import { Data, EndOfDayPrice, Nasadaq100, getLiveShares, renderLiveShareHTML, saveShares } from "./modules/liveShares";
 
 
 getNewsData(); 
@@ -19,12 +19,7 @@ if(header !== null){
         const optionsInHeader = document.querySelector('.filter-cont') as HTMLLIElement;
         const headerMenu = document.querySelector('.top-right-menu') as HTMLImageElement;  
         const target: EventTarget | null = el.target; 
-        // console.log(dateInput.value)
         if(optionsInHeader && target === headerMenu) return optionsInHeader.classList.toggle('show-menu'); 
-        // if(dateInput && target === headerInput) return dateInput.classList.add('show-date');  
-        // if(dateInput && dateInput.classList.contains('show-date') && target !== dateInput) 
-        // return dateInput.classList.remove('show-date');
-    
     })
 } else {
     console.log('Header is null'); 
@@ -39,7 +34,6 @@ if(formInHeader !== null){
         el.preventDefault(); 
 
         const keyWord: string | null = headerInput ? headerInput.value : null 
-        // const date: string | null = dateInput ? dateInput.value : null
         headerInput!.value = '';
         
         if(keyWord){
@@ -56,14 +50,6 @@ if(formInHeader !== null){
         }
     }); 
 }
-
-// --------------------------SET DATE-------------------------------------
-// const dateInputEL = document.querySelector('#date') as HTMLInputElement; 
-// dateInputEL.addEventListener('change', () => {
-//     getNewsData(currentDisplayUrl.url, dateInputEL.value); 
-// }); 
-
-// // ------------------------------------------------------------------------
 
 const filterContEl = document.querySelector('.filter-cont') as HTMLUListElement; 
 filterContEl.addEventListener('click', (el: Event) => {
@@ -149,7 +135,7 @@ mainContentContainer.addEventListener('click', (el) => {
     const showMoreIcon: NodeListOf<HTMLImageElement> = document.querySelectorAll('.show-more-cont img'); 
     const showMoreContent = document.querySelectorAll('.content');
     const target = el.target as EventTarget;
-    // console.log(target)
+
 
     showMoreIcon.forEach((icon:HTMLImageElement,index:number) => {
         if(target === icon){
@@ -187,25 +173,17 @@ gridLayout.addEventListener('click', (el) => {
 });
 
 // ------------------------------RENDER SIDE-NEWS-------------------------------------------------
-const nasdaq100CurrentPrice = getLiveShares; 
-const nasdaq100EndOfPrice = getLiveShares; 
-let endOfPrice = []; 
-Promise.all([nasdaq100CurrentPrice(['MSFT', 'AAPl', 'AMZN', 'META'], 'price'), nasdaq100EndOfPrice(['MSFT', 'AAPl', 'AMZN', 'META'], 'eod')])
-.then((values => {
-    renderLiveShareHTML(values);
-    endOfPrice = values[1];  
-    console.log(endOfPrice);   
-}));
-
-// setInterval(() => {
-//     Promise.all([nasdaq100CurrentPrice(['MSFT', 'AAPl', 'AMZN', 'META'], 'price'), endOfPrice])
-//     .then(values => {
-//         console.log('another lap');
-//         renderLiveShareHTML(values); 
-//     })
-// }, (3500 * 60)); 
-
-
 getNewsData(`https://newsapi.org/v2/everything?q=technology&sortBy=popularity&apiKey=${import.meta.env.VITE_NEWS_API}`, null, 1, 'aside');
 
+async function fetchBothPriceAndEOD(price: (orders: string[], endPoint:string) => Promise<Nasadaq100[]>, eod: (orders: string[], endPoint:string) => Promise<EndOfDayPrice[]>
+){
+    Promise.all([price(['MSFT', 'AAPl', 'AMZN', 'META'], 'price'), eod(['MSFT', 'AAPl', 'AMZN', 'META'], 'eod')])
+    .then((values => {
+        renderLiveShareHTML(values); 
+    }));   
+} 
 
+fetchBothPriceAndEOD(getLiveShares, getLiveShares); 
+setInterval(() => {
+    fetchBothPriceAndEOD(getLiveShares, getLiveShares); 
+}, (1500 * 60)); 

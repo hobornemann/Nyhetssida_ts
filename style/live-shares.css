@@ -1,13 +1,3 @@
-aside{
-  grid-area: aside;
-  background-color: #ebebeb;
-  margin-top: 41px;
-  height: fit-content;
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 1rem;
-}
-
 .liveShare-cont{
   background: white;
   height: fit-content;

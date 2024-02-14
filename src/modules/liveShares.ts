@@ -10,13 +10,13 @@ export async function getLiveShares(orders: string[], endPoint:string){
   const data = await response.data; 
   return data;
 }
-interface Nasadaq100 {
+export interface Nasadaq100 {
   AAPL: {price: string}
   AMZN: {price: string}
   META: {price: string}
   MSFT: {price: string}
 }
-interface EndOfDayPrice{
+export interface EndOfDayPrice{
   close: string;
   currency: string;
   datetime: string;
@@ -28,7 +28,7 @@ interface EndOfDayPrice{
 
 export type Data = Nasadaq100 | EndOfDayPrice;
 
-export function renderLiveShareHTML(data: Data[] | [void, void]){
+export function renderLiveShareHTML(data: Data[] | [Promise<Nasadaq100[]>, Promise<EndOfDayPrice[]>]){
   // Dela upp objekten, och dom egenskaperna jag söker efter är price, close och name på aktien. 
   // första objektet innehåller endast price och den andra close. 
   const symbols: string[] = ['MSFT', 'AAPl', 'AMZN', 'META'].sort(); 

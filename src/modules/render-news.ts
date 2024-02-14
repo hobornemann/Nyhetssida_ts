@@ -5,72 +5,78 @@ import axios from "axios";
 import { Article, Articles } from "../types/article";
 import { getArticlesFromLocalStorage, setArticlesInLocalStorage } from "./model";
 import { updateFavouriteButtonsOfRenderedArticles, addEventListenersToFavouriteButtons } from "./favourites.ts";
-
-import saveLocaleStorage from "./localStorage";
+import saveLocaleStorage, {currentDisplayUrl, renderedArticles} from "./localStorage";
 // localStorage.clear();
-export const currentDisplayUrl= JSON.parse(localStorage.getItem('activeUrl')) || []; 
-export const maxPages = JSON.parse(localStorage.getItem('pages')) || []; 
 
-export async function getNewsData(url: string | [] | null = null, key:string = null, page:number = 1){
-
+export async function getNewsData(url: string | null = null, date=null, page:number = 1, container:string = 'main'){
   const APIkey: string = import.meta.env.VITE_NEWS_API; 
-  const URL: string | [] = (url) ? 
-  url : `https://newsapi.org/v2/top-headlines?country=us&category=general&pageSize=10&page=${page}&apiKey=${APIkey}`;
-  if(typeof URL === 'string') currentDisplayUrl[0] = (URL.substring(0, URL.indexOf('apiKey=')))
-  console.log("currentDisplayUrl[0]: ",currentDisplayUrl[0]);
-  
-  try {
+  const URL: string = (url) ? 
+  url : `https://newsapi.org/v2/top-headlines?country=us&category=general&from=${date}&pageSize=10&page=${page}&apiKey=${APIkey}`;
 
+  try {
     const response =  (typeof URL === 'string') ? await axios(URL) : await axios(URL[0] + key);
     const data = await response.data; 
-    console.log("data in render-news.ts", data);    
+    console.log("data in render-news.ts", data); 
     
-    maxPages[0] = (Math.ceil(data.totalResults / 10) > 10) ? 9 : Math.ceil(data.totalResults / 10); 
-    saveLocaleStorage('activeUrl', JSON.stringify(currentDisplayUrl))
-    saveLocaleStorage('pages', JSON.stringify(maxPages))
+    // console.log(URL)
+    
+    // ------------------------FILTRERAR BORT ARTIKLAR MED NULL------------------------------
+    const filteredArticles: Article[] = data.articles.filter((article: Article) => {
+      let {author, url, urlToImage, source: {name}, title, description, content } = article;
+      if(url && urlToImage && name && title && description && content) return article;  
+    }); 
 
-    // ---------------------------------------------------------------------------------------------
-    const amountOfPages: NodeListOf<HTMLParagraphElement> = document.querySelectorAll('.page p'); 
-    if(maxPages[0]) {
-      amountOfPages.forEach((page, index) => {
-        if(index >= maxPages[0]) return page.classList.add('disabled-page-number');
-        return page.classList.remove('disabled-page-number');
-      });
+    const arrOfRenderedURL = renderedArticles.map((article) => article.url);     
+    if(arrOfRenderedURL.length > 0){
+       filteredArticles.forEach(article => {
+        if(!arrOfRenderedURL.includes(article.url)) renderedArticles.push(article)
+       })
+      
+    } else {
+      filteredArticles.forEach(article => renderedArticles.push(article)); 
     }
-    // ----------------------------------------------------------------------------------------------
-    console.log(maxPages, currentDisplayUrl)
-    await renderNewsHTML(data); 
-    await setArticlesInLocalStorage('renderedArticles', data.articles)
-    await updateFavouriteButtonsOfRenderedArticles();
-    await addEventListenersToFavouriteButtons();  
+
+    if(container === 'main') currentDisplayUrl.url = URL;
+    renderNewsHTML(filteredArticles, container, data.totalResults); 
+    setArticlesInLocalStorage('renderedArticles', renderedArticles);
+    updateFavouriteButtonsOfRenderedArticles();
+    // addEventListenersToFavouriteButtons(container);
   } catch (error) {
     console.log(error)
     console.log("ERROR when fetching in render-news.ts")
   }
 }
 
-export async function renderNewsHTML(data: Articles){
-    const newsCont: HTMLUListElement | null = document.querySelector('.main-news-content'); 
+export async function renderNewsHTML(articles: Article[], container: string = 'main', totalResults=null){
+  const newsCont = (container === 'main') ? 
+  document.querySelector('.main-news-content') as HTMLUListElement : 
+  document.querySelector('.aside-news-content') as HTMLUListElement; 
   
-  if(newsCont && data.articles.length < 1){
+  if(articles.length < 1){
     return newsCont.innerHTML = "Unfortunately, there are no news articles available for the choosen category/date/page. Please check back later for updates."
   }  
-  
-  const html = data.articles.map((article: Article) => {
+
+  // -----------------------------------CALC PAGE AMOUNT----------------------------------------------------------
+  if(container === 'main'){
+    currentDisplayUrl.pages = (totalResults) ? Math.ceil(totalResults / 10) : 1; 
+    const amountOfPages: NodeListOf<HTMLParagraphElement> = document.querySelectorAll('.page p'); 
+    amountOfPages.forEach((page, index: number) => {
+      if(index >= currentDisplayUrl.pages) return page.classList.add('disabled-page-number');
+      return page.classList.remove('disabled-page-number');
+    });
+  }
+// ----------------------------------------------------------------------------------------------
+
+  const html: string = articles.map(article => {
     let {author, url, urlToImage, source: {name}, title, description, content } = article;
-    
-    if(url === null || urlToImage === null || name === null || title === null || description === null || content === null )
-      return // Objekt med null inuti ska ej visas på skärmen
-  
-    // content.replace(/(<([^>]+)>)/gi, "")
+
     content = content.substring(0,content.indexOf('['));
     if(author == null) author = ''; 
+    const hideContent: string = (container === 'aside') ? 'none' : '';  
     
-  // console.log("article in renderNewsHTML",article)
-
     return `
-    <li class="article-container">
-      <a href="${url}" title="Visit the website"><h1>${name}</h1></a><button class="favourite-button" data-url="${url}" data>Save as favourite</button>
+    <li class="article-container" data-type="${container}">
+      <a href="${url}" title="Visit the website"><h1>${name}</h1></a><button class="favourite-button" data-url="${url}">Save as Favourite</button>
       <div>
         <div class="article-content">
           <a href="${url}"><img src="${urlToImage}" alt="${name} headline picture"></a>
@@ -80,7 +86,7 @@ export async function renderNewsHTML(data: Articles){
             <p class="sub-title">${description}</p>
           </div>
         </div>
-        <div class="show-more-cont">
+        <div class="show-more-cont" style="display: ${hideContent}">
           <div>
             <p>Show more</p>
             <img src="svg-icon/arrow-down-circle-svgrepo-com.svg" alt="">
@@ -93,7 +99,26 @@ export async function renderNewsHTML(data: Articles){
       </div>
     </li>
     `
-  }).join(''); 
+  }).join('');
 
-  if(newsCont) newsCont.innerHTML = html; 
+  if(html.length < 1) return newsCont.innerText = "Unfortunately, there are no news articles available for the choosen category/date/page. Please check back later for updates."
+  if(html.length > 1) newsCont.innerHTML = html; 
+  if(container == 'aside') asideNewsfunctionality(articles.length);
+}
+
+export function asideNewsfunctionality(amountOfArticle: number){
+  const asideNewsContainer = document.querySelector('.aside-news-content') as HTMLUListElement;
+  const asideNewsContainerWidth = asideNewsContainer.offsetWidth * amountOfArticle; 
+  let xCoord = 350;  
+  
+  asideNewsContainer.scroll({top: 0, left: xCoord, behavior: 'instant'});
+
+  const setIntervalId = setInterval(() => {
+    if(xCoord > asideNewsContainerWidth) {
+      clearInterval(setIntervalId);
+    } 
+
+    asideNewsContainer.scroll({top: 0, left: xCoord, behavior: 'smooth'});
+    xCoord += 350; 
+  }, (6000 * 2))
 }

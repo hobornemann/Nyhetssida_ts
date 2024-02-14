@@ -45,5 +45,22 @@
     grid-template-columns: 1fr;
     padding: 0px 16px;
     max-width: 738px;
+    /* height: fit-content; */
+  }
+
+  aside{
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media(width < 700px){
+  aside{
+    grid-template-columns: 1fr;
+    min-width: 375px;
+    max-width: 375px;
+  }
+
+  .grid-layout{ 
+    place-items: center;
   }
 }

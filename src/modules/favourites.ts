@@ -2,6 +2,14 @@ import { Article } from "../types/article";
 import { getArticlesFromLocalStorage, setArticlesInLocalStorage} from "./model.ts"
 
 
+
+export function firstStepsToSaveArticleAsFavourite(el: HTMLButtonElement){
+    const button = el;
+    const article = button.closest('.article-container') as HTMLDivElement;
+    const dataType: string | undefined = article.dataset.type; 
+    if(dataType) addEventListenersToFavouriteButtons(button);
+}
+
 // ----------------------UPDATE FAVOURITE BUTTONS OF RENDERED ARTICLES--------------------------------
 export function updateFavouriteButtonsOfRenderedArticles(): Promise<boolean>{ 
     return new Promise((resolve, reject) => {
@@ -17,8 +25,11 @@ export function updateFavouriteButtonsOfRenderedArticles(): Promise<boolean>{
                         renderedFavouriteArticles.map(renderedFavouriteArticle => {
                             const favouriteButton = favouriteButtons.filter(button => 
                                 button.getAttribute('data-url') === renderedFavouriteArticle.url)
+                            if(favouriteButton[0]){
                                 favouriteButton[0].classList.add('is-favourite-article')
                                 favouriteButton[0].innerText = "Favourite"
+                            }
+                                
                         })
                     }
                 }
@@ -36,16 +47,16 @@ export function updateFavouriteButtonsOfRenderedArticles(): Promise<boolean>{
 }
 
 // ----------------------ADD EVENT LISTENERS TO FAVOURITE BUTTONS--------------------------------
-export function addEventListenersToFavouriteButtons(): Promise<boolean> {
+export function addEventListenersToFavouriteButtons(clickedButton: HTMLButtonElement): Promise<boolean> {
     return new Promise((resolve, reject) => {
         try{
             const favouriteButtons: HTMLButtonElement[] | null = Array.from(document.querySelectorAll(".favourite-button"))    
             let renderedArticles: Article[] | undefined = getArticlesFromLocalStorage('renderedArticles')
             if(favouriteButtons && renderedArticles){
                 favouriteButtons.forEach(button => {
-                    button.addEventListener('click', async (e: MouseEvent) => {
+                    if(button === clickedButton){
                         let isFavourite: boolean = button.classList.contains("is-favourite-article")
-                        let clickedButton: HTMLButtonElement = e.target as HTMLButtonElement;
+                        // let clickedButton: HTMLButtonElement = e.target as HTMLButtonElement;
                         let urlOfClickedArticle: string | null = clickedButton.getAttribute('data-url')
                         if(isFavourite){
                             let favouriteArticles: Article[] | undefined = getArticlesFromLocalStorage('favouriteArticles')
@@ -84,7 +95,7 @@ export function addEventListenersToFavouriteButtons(): Promise<boolean> {
                         } else {
                             console.log("Error:  neither isFavourite nor !isFavourite")
                         }
-                    })
+                    }
                 })
                 resolve(true)    
             } else {

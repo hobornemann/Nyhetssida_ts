@@ -9,9 +9,9 @@ import { currentDisplayUrl} from "./modules/localStorage";
 import { Data, EndOfDayPrice, Nasadaq100, getLiveShares, renderLiveShareHTML, saveShares } from "./modules/liveShares";
 
 
-
+// ------------------------------Start Function --------------------------------
 if(JSON.parse(localStorage.getItem('mostRecentUrlExclApiKey'))){
-       getNewsData(JSON.parse(localStorage.getItem('mostRecentUrlExclApiKey'))+"apiKey="+import.meta.env.VITE_NEWS_API); 
+    getNewsData(JSON.parse(localStorage.getItem('mostRecentUrlExclApiKey'))+"apiKey="+import.meta.env.VITE_NEWS_API); 
 } else {
     getNewsData(); 
 }
@@ -31,9 +31,6 @@ if('serviceWorker' in navigator){
 window.addEventListener('offline', () =>{    
     location.reload();
 })
-
-
-
 
 
 

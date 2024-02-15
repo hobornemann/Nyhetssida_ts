@@ -9,6 +9,7 @@ import { currentDisplayUrl} from "./modules/localStorage";
 import { Data, EndOfDayPrice, Nasadaq100, getLiveShares, renderLiveShareHTML, saveShares } from "./modules/liveShares";
 
 
+
 getNewsData(); 
 // ------------------------------Header--------------------------------
 const header = document.querySelector('header');
@@ -173,17 +174,25 @@ gridLayout.addEventListener('click', (el) => {
 });
 
 // ------------------------------RENDER SIDE-NEWS-------------------------------------------------
+// const nasdaq100CurrentPrice = getLiveShares; 
+// const nasdaq100EndOfPrice = getLiveShares; 
+// let endOfPrice = []; 
+// Promise.all([nasdaq100CurrentPrice(['MSFT', 'AAPl', 'AMZN', 'META'], 'price'), nasdaq100EndOfPrice(['MSFT', 'AAPl', 'AMZN', 'META'], 'eod')])
+// .then((values => {
+//     renderLiveShareHTML(values);
+//     endOfPrice = values[1];  
+//     console.log(endOfPrice);   
+// }));
+
+// setInterval(() => {
+//     Promise.all([nasdaq100CurrentPrice(['MSFT', 'AAPl', 'AMZN', 'META'], 'price'), endOfPrice])
+//     .then(values => {
+//         console.log('another lap');
+//         renderLiveShareHTML(values); 
+//     })
+// }, (3500 * 60)); 
+
+
 getNewsData(`https://newsapi.org/v2/everything?q=technology&sortBy=popularity&apiKey=${import.meta.env.VITE_NEWS_API}`, 1, 'aside');
 
-async function fetchBothPriceAndEOD(price: (orders: string[], endPoint:string) => Promise<Nasadaq100[]>, eod: (orders: string[], endPoint:string) => Promise<EndOfDayPrice[]>
-){
-    Promise.all([price(['MSFT', 'AAPl', 'AMZN', 'META'], 'price'), eod(['MSFT', 'AAPl', 'AMZN', 'META'], 'eod')])
-    .then((values => {
-        renderLiveShareHTML(values); 
-    }));   
-} 
 
-fetchBothPriceAndEOD(getLiveShares, getLiveShares); 
-setInterval(() => {
-    fetchBothPriceAndEOD(getLiveShares, getLiveShares); 
-}, (1500 * 60)); 

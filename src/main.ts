@@ -203,37 +203,9 @@ async function fetchBothPriceAndEOD(price: (orders: string[], endPoint:string) =
 ){
     Promise.all([price(['MSFT', 'AAPl', 'AMZN', 'META'], 'price'), eod(['MSFT', 'AAPl', 'AMZN', 'META'], 'eod')])
     .then((values => {
-        console.log("typeof values",typeof values);
-        console.log(values);
-        console.log(values.toString())
-        
-        
         renderLiveShareHTML(values as unknown as Data[]); 
     }));   
 } 
-
- 
-
-/* 
-async function fetchBothPriceAndEOD(
-    price: (orders: string[], endPoint: string) => Promise<Nasadaq100[]>, 
-    eod: (orders: string[], endPoint: string) => Promise<EndOfDayPrice[]>
-) {
-    try {
-        const [priceData, eodData] = await Promise.all([
-            price(['MSFT', 'AAPL', 'AMZN', 'META'], 'price'), 
-            eod(['MSFT', 'AAPL', 'AMZN', 'META'], 'eod')
-        ]);
-        
-        renderLiveShareHTML(priceData, eodData); // Render the HTML using both sets of data
-    } catch (error) {
-        console.error('Error fetching price and EOD data:', error);
-        // Handle error, show error message to the user, etc.
-    }
-}
-
-fetchBothPriceAndEOD(fetchPriceFunction, fetchEODFunction); */
-
 
 
 fetchBothPriceAndEOD(getLiveShares, getLiveShares); 
@@ -241,19 +213,3 @@ setInterval(() => {
     fetchBothPriceAndEOD(getLiveShares, getLiveShares); 
 }, (1500 * 60)); 
 
-
-
-/* getNewsData(`https://newsapi.org/v2/everything?q=technology&sortBy=popularity&apiKey=${import.meta.env.VITE_NEWS_API}`, null, 1, 'aside');
-
-async function fetchBothPriceAndEOD(price: (orders: string[], endPoint:string) => Promise<Nasadaq100[]>, eod: (orders: string[], endPoint:string) => Promise<EndOfDayPrice[]>
-){
-    Promise.all([price(['MSFT', 'AAPl', 'AMZN', 'META'], 'price'), eod(['MSFT', 'AAPl', 'AMZN', 'META'], 'eod')])
-    .then((values => {
-        renderLiveShareHTML(values); 
-    }));   
-}  */
-/* 
-fetchBothPriceAndEOD(getLiveShares, getLiveShares); 
-setInterval(() => {
-    fetchBothPriceAndEOD(getLiveShares, getLiveShares); 
-}, (1500 * 60));  */

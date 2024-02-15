@@ -1,24 +1,25 @@
-//@ts-nocheck
 
-const CACHE_NAME = 'my-vite-app-cache';  
-const urlsToCache = [
+const CACHE_NAME: string = 'my-vite-app-cache';  
+const urlsToCache: string[] = [
     'index.html'
 ];
 
-self.addEventListener('install', function(event){
+
+
+self.addEventListener('install', function(event: ExtendableEvent){
     console.log("Service worker is installed.");
     event.waitUntil(
         caches.open(CACHE_NAME)
         .then(function(cache){
             console.log("Service worker is caching files");
-            /* return */ cache.addAll(urlsToCache);
+            /* return */ cache.addAll(urlsToCache);     //    
         })
     );
 });
 
 
 
-self.addEventListener('activate', function(event){
+self.addEventListener('activate', function(event: ExtendableEvent){
     console.log("Service worker is activated.");
     event.waitUntil(
         caches.keys().then(function(cacheNames) {
@@ -35,7 +36,7 @@ self.addEventListener('activate', function(event){
 });
 
 
-self.addEventListener('fetch', function(event){
+self.addEventListener('fetch', function(event: FetchEvent){
     console.log("Service worker is fetching.");
     try{
         event.respondWith(

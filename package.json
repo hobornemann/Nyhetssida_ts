@@ -10,6 +10,7 @@
     "watch": "tsc --watch --preserveWatchOutput"
   },
   "devDependencies": {
+    "@types/serviceworker": "^0.0.83",
     "typescript": "^5.2.2",
     "vite": "^5.0.8"
   },

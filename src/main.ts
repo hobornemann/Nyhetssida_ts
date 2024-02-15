@@ -1,23 +1,20 @@
-// @ts-nocheck   
-// The above command makes sure that the js-file is not checked as a ts-file when the tsc compiler runs
 
-import { getNewsData, renderNewsHTML, asideNewsfunctionality, mostRecentUrl  } from "./modules/render-news";
-import { getArticlesFromLocalStorage, setArticlesInLocalStorage } from "./modules/model";
-import { Article, Articles } from "./types/article";
-import {updateFavouriteButtonsOfRenderedArticles, addEventListenersToFavouriteButtons, firstStepsToSaveArticleAsFavourite} from "./modules/favourites";
+import { getNewsData, renderNewsHTML  } from "./modules/render-news";
+import { getArticlesFromLocalStorage } from "./modules/model";
+import { Article } from "./types/article";
+import {updateFavouriteButtonsOfRenderedArticles, firstStepsToSaveArticleAsFavourite} from "./modules/favourites";
 import { currentDisplayUrl} from "./modules/localStorage";
-import { Data, EndOfDayPrice, Nasadaq100, getLiveShares, renderLiveShareHTML, saveShares } from "./modules/liveShares";
+import { EndOfDayPrice, Nasadaq100, getLiveShares, renderLiveShareHTML, Data } from "./modules/liveShares";
 
 
 // ------------------------------Start Function --------------------------------
-if(JSON.parse(localStorage.getItem('mostRecentUrlExclApiKey'))){
-    console.log("mostRecentUrl..", JSON.parse(localStorage.getItem('mostRecentUrlExclApiKey')));
-    
-    getNewsData(JSON.parse(localStorage.getItem('mostRecentUrlExclApiKey'))+"apiKey="+import.meta.env.VITE_NEWS_API); 
+
+if(localStorage.getItem('mostRecentUrlExclApiKey')){
+    getNewsData(JSON.parse(localStorage.getItem('mostRecentUrlExclApiKey')!)+"apiKey="+import.meta.env.VITE_NEWS_API);
 } else {
-    console.log("HEJ")
     getNewsData(); 
 }
+
 
 
 
@@ -127,7 +124,7 @@ categoryOptions.forEach((category: HTMLLIElement) => {
                     updateFavouriteButtonsOfRenderedArticles();
                 } else {
                     const newsCont = document.querySelector('.main-news-content') as HTMLUListElement; 
-                    if(newsCont && data.articles.length < 1){
+                    if(newsCont){
                         return newsCont.innerHTML = "You have not stored any favourite articles yet."
                     } 
                 }
@@ -180,14 +177,14 @@ const showFavouriteArticlesButton = document.querySelector(".show-favourite-arti
 if(showFavouriteArticlesButton){
     showFavouriteArticlesButton.addEventListener('click', (): void => {
         let favouriteArticles: Article[] | undefined = getArticlesFromLocalStorage('favouriteArticles')
-        let data: Articles
-        data.articles = favouriteArticles
+        /* let data: Articles
+        data.articles = favouriteArticles */
         if(favouriteArticles){
-            renderNewsHTML(data)
+            renderNewsHTML(favouriteArticles)
         } else {
             const newsCont = document.querySelector('.main-news-content') as HTMLUListElement; 
-            if(newsCont && data.articles.length < 1){
-                return newsCont.innerHTML = "You have not stored any favourite articles yet."
+            if(newsCont){
+                newsCont.innerHTML = "You have not stored any favourite articles yet."
             } 
         }
     })
@@ -206,11 +203,57 @@ async function fetchBothPriceAndEOD(price: (orders: string[], endPoint:string) =
 ){
     Promise.all([price(['MSFT', 'AAPl', 'AMZN', 'META'], 'price'), eod(['MSFT', 'AAPl', 'AMZN', 'META'], 'eod')])
     .then((values => {
-        renderLiveShareHTML(values); 
+        console.log("typeof values",typeof values);
+        console.log(values);
+        console.log(values.toString())
+        
+        
+        renderLiveShareHTML(values as unknown as Data[]); 
     }));   
 } 
+
+ 
+
+/* 
+async function fetchBothPriceAndEOD(
+    price: (orders: string[], endPoint: string) => Promise<Nasadaq100[]>, 
+    eod: (orders: string[], endPoint: string) => Promise<EndOfDayPrice[]>
+) {
+    try {
+        const [priceData, eodData] = await Promise.all([
+            price(['MSFT', 'AAPL', 'AMZN', 'META'], 'price'), 
+            eod(['MSFT', 'AAPL', 'AMZN', 'META'], 'eod')
+        ]);
+        
+        renderLiveShareHTML(priceData, eodData); // Render the HTML using both sets of data
+    } catch (error) {
+        console.error('Error fetching price and EOD data:', error);
+        // Handle error, show error message to the user, etc.
+    }
+}
+
+fetchBothPriceAndEOD(fetchPriceFunction, fetchEODFunction); */
+
+
 
 fetchBothPriceAndEOD(getLiveShares, getLiveShares); 
 setInterval(() => {
     fetchBothPriceAndEOD(getLiveShares, getLiveShares); 
 }, (1500 * 60)); 
+
+
+
+/* getNewsData(`https://newsapi.org/v2/everything?q=technology&sortBy=popularity&apiKey=${import.meta.env.VITE_NEWS_API}`, null, 1, 'aside');
+
+async function fetchBothPriceAndEOD(price: (orders: string[], endPoint:string) => Promise<Nasadaq100[]>, eod: (orders: string[], endPoint:string) => Promise<EndOfDayPrice[]>
+){
+    Promise.all([price(['MSFT', 'AAPl', 'AMZN', 'META'], 'price'), eod(['MSFT', 'AAPl', 'AMZN', 'META'], 'eod')])
+    .then((values => {
+        renderLiveShareHTML(values); 
+    }));   
+}  */
+/* 
+fetchBothPriceAndEOD(getLiveShares, getLiveShares); 
+setInterval(() => {
+    fetchBothPriceAndEOD(getLiveShares, getLiveShares); 
+}, (1500 * 60));  */

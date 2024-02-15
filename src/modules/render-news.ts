@@ -1,11 +1,9 @@
-// @ts-nocheck   
-// The above command makes sure that the js-file is not checked as a ts-file when the tsc compiler runs
 
 import axios from "axios";
-import { Article, Articles } from "../types/article";
-import { getArticlesFromLocalStorage, setArticlesInLocalStorage } from "./model";
-import { updateFavouriteButtonsOfRenderedArticles, addEventListenersToFavouriteButtons } from "./favourites.ts";
-import saveLocaleStorage, {currentDisplayUrl, renderedArticles, mostRecentUrl} from "./localStorage";
+import { Article } from "../types/article";
+import { setArticlesInLocalStorage } from "./model";
+import { updateFavouriteButtonsOfRenderedArticles } from "./favourites.ts";
+import saveLocaleStorage, {currentDisplayUrl, renderedArticles} from "./localStorage";
 // localStorage.clear();
 
 export async function getNewsData(url: string | null = null, date=null, page:number = 1, container:string = 'main'){
@@ -15,7 +13,8 @@ export async function getNewsData(url: string | null = null, date=null, page:num
 
   try {
     if(container === 'main') saveLocaleStorage('mostRecentUrlExclApiKey', JSON.stringify(URL.substring(0, URL.indexOf('apiKey='))))
-    const response =  (typeof URL === 'string') ? await axios(URL) : await axios(URL[0] + key);
+    
+    const response = await axios(URL);
     const data = await response.data; 
     console.log("data in render-news.ts", data); 
     
@@ -24,7 +23,7 @@ export async function getNewsData(url: string | null = null, date=null, page:num
     // ------------------------FILTRERAR BORT ARTIKLAR MED NULL------------------------------
     const filteredArticles: Article[] = data.articles.filter((article: Article) => {
       let {author, url, urlToImage, source: {name}, title, description, content } = article;
-      if(url && urlToImage && name && title && description && content) return article;  
+      if(author && url && urlToImage && name && title && description && content) return article;  
     }); 
 
     const arrOfRenderedURL = renderedArticles.map((article) => article.url);     
@@ -71,7 +70,7 @@ export async function renderNewsHTML(articles: Article[], container: string = 'm
   const html: string = articles.map(article => {
     let {author, url, urlToImage, source: {name}, title, description, content } = article;
 
-    content = content.substring(0,content.indexOf('['));
+    content = content? content.substring(0,content.indexOf('[')): "";
     if(author == null) author = ''; 
     const hideContent: string = (container === 'aside') ? 'none' : '';  
     

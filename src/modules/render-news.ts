@@ -11,12 +11,14 @@ import saveLocaleStorage, {currentDisplayUrl, renderedArticles} from "./localSto
 export async function getNewsData(url: string | null = null, page:number = 1, container:string = 'main'){
   const APIkey: string = import.meta.env.VITE_NEWS_API; 
   const URL: string = (url) ? 
-  url : `https://newsapi.org/v2/top-headlines?country=us&category=general&pageSize=10&page=${page}&apiKey=${APIkey}`;
+  url : `https://newsapi.org/v2/top-headlines?country=us&category=general&from=&pageSize=10&page=${page}&apiKey=${APIkey}`;
 
   try {
     const response = await axios(URL);
     const data = await response.data; 
-    console.log("data in render-news.ts", data);    
+    console.log("data in render-news.ts", data); 
+    
+    // console.log(URL)
     
     // ------------------------FILTRERAR BORT ARTIKLAR MED NULL------------------------------
     const filteredArticles: Article[] = data.articles.filter((article: Article) => {

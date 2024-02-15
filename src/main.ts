@@ -6,7 +6,7 @@ import { getArticlesFromLocalStorage, setArticlesInLocalStorage } from "./module
 import { Article, Articles } from "./types/article";
 import {updateFavouriteButtonsOfRenderedArticles, addEventListenersToFavouriteButtons, firstStepsToSaveArticleAsFavourite} from "./modules/favourites";
 import { currentDisplayUrl} from "./modules/localStorage";
-import { Data, getLiveShares, renderLiveShareHTML, saveShares } from "./modules/liveShares";
+import { Data, EndOfDayPrice, Nasadaq100, getLiveShares, renderLiveShareHTML, saveShares } from "./modules/liveShares";
 
 
 getNewsData(); 
@@ -19,12 +19,7 @@ if(header !== null){
         const optionsInHeader = document.querySelector('.filter-cont') as HTMLLIElement;
         const headerMenu = document.querySelector('.top-right-menu') as HTMLImageElement;  
         const target: EventTarget | null = el.target; 
-        // console.log(dateInput.value)
         if(optionsInHeader && target === headerMenu) return optionsInHeader.classList.toggle('show-menu'); 
-        // if(dateInput && target === headerInput) return dateInput.classList.add('show-date');  
-        // if(dateInput && dateInput.classList.contains('show-date') && target !== dateInput) 
-        // return dateInput.classList.remove('show-date');
-    
     })
 } else {
     console.log('Header is null'); 
@@ -39,26 +34,25 @@ if(formInHeader !== null){
         el.preventDefault(); 
 
         const keyWord: string | null = headerInput ? headerInput.value : null 
-        // const date: string | null = dateInput ? dateInput.value : null
         headerInput!.value = '';
         
         if(keyWord){
             formInHeader.classList.remove('show-menu')
-            const url: string  = `https://newsapi.org/v2/everything?q=${keyWord}&sortBy=popularity&pageSize=10&page=1&apiKey=${import.meta.env.VITE_NEWS_API}`
+            const url: string  = `https://newsapi.org/v2/everything?q=${keyWord}&sortBy=popularity&frmo=&pageSize=10&page=1&apiKey=${import.meta.env.VITE_NEWS_API}`
             getNewsData(url); 
             if(activePageBorder) activePageBorder.style.left = '0%';
 
         } else if(!keyWord && headerInput){
             headerInput.placeholder = 'Input is empty..';
             setTimeout(() => {
-                headerInput.placeholder = '';
+                headerInput.placeholder = 'Search';
             }, 5000);
         }
     }); 
 }
 
-const filterContEl = document.querySelector('.filter-cont'); 
-filterContEl?.addEventListener('click', (el: Event) => {
+const filterContEl = document.querySelector('.filter-cont') as HTMLUListElement; 
+filterContEl.addEventListener('click', (el: Event) => {
     const filterOptions: NodeListOf<HTMLParagraphElement> = document.querySelectorAll('.filter-options p'); 
     const chevronButtonsImage: NodeListOf<HTMLImageElement> = document.querySelectorAll('.chevron-button img');
     const target = el.target as EventTarget; 
@@ -82,9 +76,9 @@ categoryOptions.forEach((category: HTMLLIElement) => {
         if(formInHeader) formInHeader.classList.remove('show-menu')
 
         if(keyWord && category.closest('.categories') === newsSources){
-            let url = `https://newsapi.org/v2/top-headlines?sources=${keyWord}&pageSize=10&page=1&apiKey=${APIkey}` 
+            let url = `https://newsapi.org/v2/top-headlines?sources=${keyWord}&from=&pageSize=10&page=1&apiKey=${APIkey}` 
             if(keyWord === 'General'){
-                url = `https://newsapi.org/v2/top-headlines?country=us&category=general&pageSize=10&page=1&apiKey=${APIkey}`
+                url = `https://newsapi.org/v2/top-headlines?country=us&from=&category=general&pageSize=10&page=1&apiKey=${APIkey}`
                 getNewsData(url);
                 return
             }
@@ -93,7 +87,7 @@ categoryOptions.forEach((category: HTMLLIElement) => {
         }
 
         if(keyWord && category.closest('.categories') === sportCategories){
-            const url = `https://newsapi.org/v2/top-headlines?country=us&category=sports&pageSize=10&page=1&q=${keyWord}&apiKey=${APIkey}`
+            const url = `https://newsapi.org/v2/top-headlines?country=us&category=sports&from=&pageSize=10&page=1&q=${keyWord}&apiKey=${APIkey}`
             getNewsData(url);        
             return 
         }
@@ -141,7 +135,7 @@ mainContentContainer.addEventListener('click', (el) => {
     const showMoreIcon: NodeListOf<HTMLImageElement> = document.querySelectorAll('.show-more-cont img'); 
     const showMoreContent = document.querySelectorAll('.content');
     const target = el.target as EventTarget;
-    // console.log(target)
+
 
     showMoreIcon.forEach((icon:HTMLImageElement,index:number) => {
         if(target === icon){
@@ -179,25 +173,17 @@ gridLayout.addEventListener('click', (el) => {
 });
 
 // ------------------------------RENDER SIDE-NEWS-------------------------------------------------
-// const nasdaq100CurrentPrice = getLiveShares; 
-// const nasdaq100EndOfPrice = getLiveShares; 
-// let endOfPrice = []; 
-// Promise.all([nasdaq100CurrentPrice(['MSFT', 'AAPl', 'AMZN', 'META'], 'price'), nasdaq100EndOfPrice(['MSFT', 'AAPl', 'AMZN', 'META'], 'eod')])
-// .then((values => {
-//     renderLiveShareHTML(values);
-//     endOfPrice = values[1];  
-//     console.log(endOfPrice);   
-// }));
-
-// setInterval(() => {
-//     Promise.all([nasdaq100CurrentPrice(['MSFT', 'AAPl', 'AMZN', 'META'], 'price'), endOfPrice])
-//     .then(values => {
-//         console.log('another lap');
-//         renderLiveShareHTML(values); 
-//     })
-// }, (3500 * 60)); 
-
-
 getNewsData(`https://newsapi.org/v2/everything?q=technology&sortBy=popularity&apiKey=${import.meta.env.VITE_NEWS_API}`, 1, 'aside');
 
+async function fetchBothPriceAndEOD(price: (orders: string[], endPoint:string) => Promise<Nasadaq100[]>, eod: (orders: string[], endPoint:string) => Promise<EndOfDayPrice[]>
+){
+    Promise.all([price(['MSFT', 'AAPl', 'AMZN', 'META'], 'price'), eod(['MSFT', 'AAPl', 'AMZN', 'META'], 'eod')])
+    .then((values => {
+        renderLiveShareHTML(values); 
+    }));   
+} 
 
+fetchBothPriceAndEOD(getLiveShares, getLiveShares); 
+setInterval(() => {
+    fetchBothPriceAndEOD(getLiveShares, getLiveShares); 
+}, (1500 * 60)); 

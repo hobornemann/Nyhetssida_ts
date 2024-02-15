@@ -14,7 +14,7 @@ export async function getNewsData(url: string | null = null, date=null, page:num
   url : `https://newsapi.org/v2/top-headlines?country=us&category=general&from=${date}&pageSize=10&page=${page}&apiKey=${APIkey}`;
 
   try {
-    saveLocaleStorage('mostRecentUrlExclApiKey', JSON.stringify(URL.substring(0, URL.indexOf('apiKey='))))
+    if(container === 'main') saveLocaleStorage('mostRecentUrlExclApiKey', JSON.stringify(URL.substring(0, URL.indexOf('apiKey='))))
     const response =  (typeof URL === 'string') ? await axios(URL) : await axios(URL[0] + key);
     const data = await response.data; 
     console.log("data in render-news.ts", data); 

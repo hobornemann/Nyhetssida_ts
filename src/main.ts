@@ -11,8 +11,11 @@ import { Data, EndOfDayPrice, Nasadaq100, getLiveShares, renderLiveShareHTML, sa
 
 // ------------------------------Start Function --------------------------------
 if(JSON.parse(localStorage.getItem('mostRecentUrlExclApiKey'))){
+    console.log("mostRecentUrl..", JSON.parse(localStorage.getItem('mostRecentUrlExclApiKey')));
+    
     getNewsData(JSON.parse(localStorage.getItem('mostRecentUrlExclApiKey'))+"apiKey="+import.meta.env.VITE_NEWS_API); 
 } else {
+    console.log("HEJ")
     getNewsData(); 
 }
 

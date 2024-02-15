@@ -125,16 +125,23 @@ The web application is a single-page application that fetches headlines, subhead
 ### Usage
 
 1. Type Safety / Potential Bugs:
-- By using Typescript, we have 
+- Since >95% of the code-base has been written in Typescript, we have minimised the number of potential problems that may arise 
 
-2. Show/hide:
+2. Search capability:
 
-- When the user wants to add a new web link, a dialog box appears with two input-fields.In the first one, the user inserts the url to the new website. In the second one, the user provides a name to the website. When done, the user clicks the OK- or the Cancel-button. The dialog box disappears when a button has been clicked.  
+-  The web application offers the possibility to search news articles that contain a specific word. 
 
+3. Filter capability:
 
-3. User Interaction / Communication:
+-  The user can filter news articles per news agency as well for favourite-marked articles. 
 
-- Should the user insert a faulty url, a popup alert appears and explains that the provided web address was not fully correct. The alert provides info on what the user may have missed when inserting the url.
+4. Intuitive Navigation and Interaction:
+
+-  The navigation menue, search- and filtering functionality is easily discoverable and user-friendly in both desktop, tablet and mobile view.
+
+5. Offline capability:
+
+- When going offline, the application reloads on the most recently visited page / fetched articles and continues to enable the user to surf the pages / fetches that the user hade activated before he/she went offline. 
 
 
 
@@ -168,81 +175,51 @@ Compiled / built assets:            dist folder
 
 ### Code Review 
 
-In this section, I will provide some comments on the code, i.e. what I perceive to be the strengths and weaknesses. 
+In this section, I will provide some comments on the project and code, i.e. what I perceive to be the strengths and weaknesses. 
 
 1. Strengths
 
-a) MVC-inspired Module Structure: 
+a) Typescript:
+More than 95% of the code base has been written and type-checked in Typescript (i.e. without the //@ts-nocheck exclusion). Currently, there is one outstanding Typescript-issue in main.ts (Promise-related) and one in the sw.ts file (event-type). 
 
-=> Model: 
-> This application has a backend in the form of 
-  a localStorage object (model.js) and the accessible databases of the API-providers (fetchData.js).
+b) Design and usability:
+The clean design and the intuitive navigation and interaction functionality makes it easy for the user to understand and enjoy the the web application.
 
-=> View: 
-> the single-page HTML-document (index.html) only contains structural elements. It neither contains any styles nor any functionality. The dynamic parts of the web page are generated dynamically to fit data-items fetched from localStorage or the API-providers.
-> all styles are included in one file (style.css). Elements that belong to each other are grouped together (weblinks, weather forecasts, news articles, notes). 
-
-=> Controller:
-> all event listeners are located in one file (main.js). Event listeners that are related to each other are also grouped together. 
-
-b) Naming:
-> HTML-elements, JS-objects/variables and functions have been given names that enable other developers to understand the code. This will make it easy and fast for other developers to maintain and/or improve. 
-
-c) Refactoring
-> All code that is related to fetching data from local storage or from external data providers via API has been refactored into separate functions. 
-> The rendering functions that require the rendering of dynamic HTML and the dynamic creation of event listeners have intentionally not been refactored into sub-functions. 
-
-d) Error handling 
-> all functions and event-listeners have been equipped with try-catch for error handling in order to catch errors at the source.
-> With a few intentional exceptions (the rendering functions), functions have been limited to only serve one purpose. Including try-catch error handling in each function makes sure that errors are caught at the source where they occur.  
-> However, the area of error handling is probably much larger than I have knowledge about at this point. Thus, error handling has also been listed as a weakness.
-
-e) Validation of user input
-> The code contains at least a basic form of validation of user-input as regards the creation of new web links (checking that the input has the format of a valid website address, that the main domain can be extracted from the website address and that the number of web-links does not exceed the number that can be displayed on the web page).
-
-f) API access keys
-> The API-Access Keys are stored in a separate json-file, which has been excluded from the GitHub repo via the dot-gitignore-file. 
-
-g) Responsive design
-> By using css' clamis in English  feature for specifying font-size, height etc of certain HTML-elements, I have achieved a design that is dynamically responsive, i.e. that dynamcially and gradually adjusts the design to the type and size of the user's device (rather than the stepwise responsive design that media-queries can achieve). The advantage of using clamp is that it will work on any and all new device-sizes that manufacturers may come up with.
+c) Offline capability & performance:
+The use of a service worker not only makes it possible to continue enjoying the website in an offline-mode, but the service worker also helps to improved the perceived performance of the website by applying pre-caching and run-time caching.
 
 
-2. Weaknesses
+2. Improvement Potential
 
-a) Testing:
-> The application has not been properly tested. The project lacks both unit tests and proper UI-test.
+a) Firebase not fully set up yet:
+> The application has not been fully set up on Firebase yet. A good amount of work has been done, but there are a few things outstanding to complete the mission.
 
-b) Security
-> The application has not been checked or tested from a security perspective at all. 
+b) Google Analytics not demonstrated yet:
+> A tracking tag has been implemented, but the Google Analytics functionality has not yet been demonstrated.
 
 c) Accessibility:
-> The application has only been subject to minimal accessibility tests.
-> No alt-texts have been added to the images retrieved from the external data providers
+> Alt-texts have been added to icons, but the application has not gone through other types of accessibility tests.
 
-d) Long names:
-> unless you use special software to shrink the size of the application, longer names has the disadvantage of making the application larger than needs to be from a performance perspective. However, performance should not be an issue for this application. The clarity of code aspect is more important in this case.    
+d) Testing:
+> The application has not been properly tested. The project lacks both unit tests and proper UI-test. 
 
 e) Error handling:
-> The area of error handling is probably much larger than I have knowledge to include into this project. Thus, error handling is probably also a major weakness of the project at this point.
+> The area of error handling is probably much larger than we have knowledge to include into this project. Thus, error handling is probably also a weakness of the project at this point.
 
 f) Limits on free data
-> There is a limit on the number of images that the user may retrieve from Unsplash per unit of time. This limit has been handled by applying a default background image that is displayed when the limit has been reached.
-> There may potentially be corresponding limits on data retrieval from the other data providers.   
+> There is a limit on the number of articles and stock prices that the user may retrieve from NewsAPI and TwelveData per unit of time.  
 
 g) Language
-> The app is targeting a Swedish speaking audience only. 
-> The news feed from BBC is in English only. 
+> The app is targeting a English speaking audience only. 
+> The news feeds are in English only. 
 
-h) Overloaded functions 
-> Two similar functions could have been structured as one overloaded function (I didn't have time to look into how to do that). 
-
-i) Validation:
-> Lacking validation for the cityName & countryCode when changing location for the weather forecasts (I ran out of time)
 
 
 ## 5. Roadmap 
 
-For the time being, there are no plans to extend, update or permanently publish the application. It only serves as a solution to an educational assignment. 
+The outstanding things in this project are to:
+a) finish the Firebase / Firestore set up including login page / authentication and 
+b) demonstrate that the Google Analytics tracking tags are working as intended.
 
 
 ## 6. Contributing

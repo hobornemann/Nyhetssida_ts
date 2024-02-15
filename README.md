@@ -52,7 +52,8 @@ Firebase (work in progress)
     <link rel="stylesheet" href="/style/style.css">
     <link rel="stylesheet" href="/style/media-queries.css">
     <script type="module" src="/src/main.ts" defer></script>
-5. Access to https://github.com/hobornemann/Nyhetssida_ts   
+5. Install serviceworker types: npm install @types/serviceworker --save-dev
+6. Access to https://github.com/hobornemann/Nyhetssida_ts   
 
 ### Installation
 
@@ -82,7 +83,8 @@ The package.json needs to include the following two dependencies (or later versi
     "dotenv": "^16.4.1",
     "firebase": "^10.7.2"
   },
-5. Api Access Keys: 
+5. Install serviceworker types: npm install @types/serviceworker --save-dev
+6. Api Access Keys: 
 To be able to use the application, you need to have/get a free personal API Access Key from the following data providers:
 
 https://newsapi.org/
@@ -125,7 +127,7 @@ The web application is a single-page application that fetches headlines, subhead
 ### Usage
 
 1. Type Safety / Potential Bugs:
-- Since >95% of the code-base has been written in Typescript, we have minimised the number of potential problems that may arise 
+- Since 100% of the code-base has been written in Typescript (no more //@ts-nocheck), we have minimised the number of potential problems that may arise. 
 
 2. Search capability:
 
@@ -180,7 +182,7 @@ In this section, I will provide some comments on the project and code, i.e. what
 1. Strengths
 
 a) Typescript:
-More than 95% of the code base has been written and type-checked in Typescript (i.e. without the //@ts-nocheck exclusion). Currently, there is one outstanding Typescript-issue in main.ts (Promise-related) and one in the sw.ts file (event-type). 
+100% of the code base has been written and type-checked in Typescript (i.e. without the //@ts-nocheck exclusion). No outstanding errors.
 
 b) Design and usability:
 The clean design and the intuitive navigation and interaction functionality makes it easy for the user to understand and enjoy the the web application.

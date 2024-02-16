@@ -36,6 +36,9 @@ Axios
 GitHub
 Firebase (work in progress)
 
+Trello:  https://trello.com/b/VQLxu5L9/kanban-nyhetsapp
+
+
 ## 3. Getting Started
 
 ### Prerequisites

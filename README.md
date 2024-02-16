@@ -37,7 +37,7 @@ GitHub
 Firebase (work in progress)
 
 Trello:  https://trello.com/invite/b/VQLxu5L9/ATTI9590dbf396b7d21be46e98c6e7be55aaDB0B8CBD/kanban-nyhetsapp
-
+Presentation:  https://docs.google.com/presentation/d/1wGXHlWbrkvHz_W40zojDG20Xu28yE7b616CEvfESpKg/edit?usp=sharing 
 
 ## 3. Getting Started
 
